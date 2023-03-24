@@ -35,25 +35,8 @@ void drawCircle(SDL_Renderer* rend, Pos center, float radius, Color Color) {
 
 void drawRect(SDL_Renderer* rend, Pos startPos, int width, int height, Color color) {
     SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
-    int maxPointsCount = (width + 1) * (height + 1);
-    SDL_Point* points = (SDL_Point*) malloc(maxPointsCount * sizeof(SDL_Point));
-
-    if (points != nullptr) {
-        int pointsCount = 0;
-
-        for (int x = startPos.x; x < startPos.x + width; x++) {
-            for (int y = startPos.y; y < startPos.y + height; y++) {
-                if (pointsCount < maxPointsCount) {
-                    //std::cout << "x: " << x << ". y: " << y << ". Count: " << pointsCount << std::endl;
-                    points[pointsCount] = {x, y};
-                    pointsCount++;
-                }
-            }
-        }
-        SDL_RenderDrawPoints(rend, points, pointsCount);
-    }
-    free(points);
-
+    SDL_Rect rect = {startPos.x, startPos.y, width, height};
+    SDL_RenderFillRect(rend, &rect);
 }
 
 void drawMainMenuScreen(SDL_Renderer* rend) {
@@ -62,25 +45,19 @@ void drawMainMenuScreen(SDL_Renderer* rend) {
     SDL_RenderPresent(rend);
 }
 
-void drawTable(SDL_Renderer* rend, SDL_Surface* screenSurface) {
+void drawTable(SDL_Renderer* rend) {
     //draw outer brown rectangle
-    // drawRect(rend, {0, 0}, horizontalScreenSize, verticalScreenSize, {110, 38, 14, 255});
-    // drawRect(rend, {ballRadius * 2, ballRadius * 2}, horizontalTableSize, verticalTableSize, {0, 128, 0, 255});
-
-    SDL_Rect brownRect = {0, 0, horizontalScreenSize, verticalScreenSize};
-    SDL_FillRect(screenSurface, &brownRect , SDL_MapRGBA(screenSurface->format, 100, 38, 14, 255));
-    
-    SDL_Rect greenRect =  {ballRadius * 2, ballRadius * 2, horizontalTableSize, verticalTableSize};
-    SDL_FillRect(screenSurface, &greenRect, SDL_MapRGBA(screenSurface->format, 100, 38, 14, 255));
+    drawRect(rend, {0, 0}, horizontalScreenSize, verticalScreenSize, {110, 38, 14, 255});
+    drawRect(rend, {ballRadius * 2, ballRadius * 2}, horizontalTableSize, verticalTableSize, {0, 128, 0, 255});
 
     //draw holes
     drawCircle(rend, {ballRadius, ballRadius}, ballRadius, {0, 0, 0, 255});
 }
 
 void drawBalls(SDL_Renderer* rend, Ball* balls) {
-        for(int i = 0; i < 16; i++) {
-            drawCircle(rend, balls[i].pos, ballRadius, ballColors[i]);
-        }
+    for(int i = 0; i < 16; i++) {
+        drawCircle(rend, balls[i].pos, ballRadius, ballColors[i]);
+    }
 }
 
 void drawBMP(SDL_Renderer* rend, Pos startPos, char* filepath) {

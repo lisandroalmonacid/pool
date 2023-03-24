@@ -88,7 +88,7 @@ void Game::main_menu_screen() {
 void Game::update() {
     while(ballsMoving(balls)) {
         while( SDL_PollEvent( &event ) ){}
-        drawTable(rend, screenSurface);
+        drawTable(rend);
 
         drawBalls(rend, balls);
 

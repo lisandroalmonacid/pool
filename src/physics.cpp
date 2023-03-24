@@ -49,20 +49,20 @@ float applyFriction(float vel) {
 
 //If the ball went past the table edge, get it right in the edge and invert the velocity.
 void manageBorderCollisions(Ball* b) {
-    if (b->pos.x > tableRightBorder){
-        b->pos.x = tableRightBorder;
+    if (b->pos.x > tableRightBorder - ballRadius){
+        b->pos.x = tableRightBorder - ballRadius;
         b->vel.x = -b->vel.x;
     }
-    if (b->pos.x < tableLeftBorder) {
-        b->pos.x = tableLeftBorder;
+    if (b->pos.x < tableLeftBorder + ballRadius) {
+        b->pos.x = tableLeftBorder + ballRadius;
         b->vel.x = -b->vel.x;
     }
-    if (b->pos.y > tableDownBorder){
-        b->pos.y = tableDownBorder;
+    if (b->pos.y > tableDownBorder - ballRadius){
+        b->pos.y = tableDownBorder - ballRadius;
         b->vel.y = -b->vel.y;
     }
-    if (b->pos.y < tableUpBorder) {
-        b->pos.y = tableUpBorder;
+    if (b->pos.y < tableUpBorder + ballRadius) {
+        b->pos.y = tableUpBorder + ballRadius;
         b->vel.y = -b->vel.y;
     }
 }
