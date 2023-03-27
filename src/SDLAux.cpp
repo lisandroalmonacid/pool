@@ -55,6 +55,8 @@ void drawBalls(Ball* balls) {
     for (int i = 0; i < 16; i++) {
         dst_rects[i].x = balls[i].pos.x - ballRadius;
         dst_rects[i].y = balls[i].pos.y - ballRadius;
+        dst_rects[i].w = ballRadius * 2;
+        dst_rects[i].h = ballRadius * 2;
     }
 
     //draw balls
