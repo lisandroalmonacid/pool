@@ -3,7 +3,7 @@
 #include <iostream>
 #include <bitset>
 
-void drawCircle(SDL_Renderer* rend, Pos center, float radius, Color Color) {
+void drawCircle(Pos center, float radius, Color Color) {
 
     SDL_SetRenderDrawColor(rend, Color.r, Color.g, Color.b, Color.a);
     int maxPointsCount = int(4*radius*radius); //round-up pi.
@@ -33,34 +33,37 @@ void drawCircle(SDL_Renderer* rend, Pos center, float radius, Color Color) {
     free(points);
 }
 
-void drawRect(SDL_Renderer* rend, Pos startPos, int width, int height, Color color) {
+void drawRect(Pos startPos, int width, int height, Color color) {
     SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
     SDL_Rect rect = {startPos.x, startPos.y, width, height};
     SDL_RenderFillRect(rend, &rect);
 }
 
-void drawMainMenuScreen(SDL_Renderer* rend) {
+void drawMainMenuScreen() {
     //drawBMP(rend, {0, vertical_screen_size}, "../img/mainMenu.bmp");
-    drawRect(rend, {0, 0}, horizontalScreenSize, verticalScreenSize, {255, 255, 255, 255});
-    SDL_RenderPresent(rend);
+    SDL_BlitSurface(mainMenuSurface, nullptr, screenSurface, nullptr);
+    //drawRect({0, 0}, horizontalScreenSize, verticalScreenSize, {255, 255, 255, 255});
+    SDL_UpdateWindowSurface(win);
 }
 
-void drawTable(SDL_Renderer* rend) {
-    //draw outer brown rectangle
-    drawRect(rend, {0, 0}, horizontalScreenSize, verticalScreenSize, {110, 38, 14, 255});
-    drawRect(rend, {ballRadius * 2, ballRadius * 2}, horizontalTableSize, verticalTableSize, {0, 128, 0, 255});
-
-    //draw holes
-    drawCircle(rend, {ballRadius, ballRadius}, ballRadius, {0, 0, 0, 255});
+void drawTable() {
+    SDL_BlitSurface(tableSurface, nullptr, screenSurface, nullptr);
 }
 
-void drawBalls(SDL_Renderer* rend, Ball* balls) {
+void drawBalls(Ball* balls) {
+    //update dst rectangles
+    for (int i = 0; i < 16; i++) {
+        dst_rects[i].x = balls[i].pos.x - ballRadius;
+        dst_rects[i].y = balls[i].pos.y - ballRadius;
+    }
+
+    //draw balls
     for(int i = 0; i < 16; i++) {
-        drawCircle(rend, balls[i].pos, ballRadius, ballColors[i]);
+        SDL_BlitScaled(ballsSurface, &src_rects[i], screenSurface, &dst_rects[i]);
     }
 }
 
-void drawBMP(SDL_Renderer* rend, Pos startPos, char* filepath) {
+void drawBMP(Pos startPos, char* filepath) {
 /*    BMP bmp;
 
     std::ifstream bmp_file;

@@ -3,15 +3,13 @@
 // probando
 Game::Game() {
 
-    //Init SDL
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
-        std::cout <<  "SDL could not initialize! SDL_Error:" << SDL_GetError() << std::endl;
-    }
-
     //Init KEYS
     for(int i = 0; i < 322; i++) { // init them all to false
         KEYS[i] = false;
     }
+
+    for (int i = 0; i < 16; i++)    
+	    balls[i] = {startingPositions[i], {0, 0}, false};
 
     //Init Source Rectangles
     for (int i = 0; i < 8; i++) {
@@ -30,21 +28,11 @@ Game::Game() {
 
     //Init Destination Rectangles
     for (int i = 0; i < 16; i++) {
-        dst_rects[i].x = balls[i].pos.x + horizontalScreenSize/2 - ballRadius;
-        dst_rects[i].y = balls[i].pos.y + verticalScreenSize/2 - ballRadius;
+        dst_rects[i].x = balls[i].pos.x - ballRadius;
+        dst_rects[i].y = balls[i].pos.y - ballRadius;
         dst_rects[i].w = ballRadius * 2;
         dst_rects[i].h = ballRadius * 2;
     }
-
-    //Init Window and Renderer
-    win = SDL_CreateWindow("Pool", 100, 100, horizontalScreenSize, verticalScreenSize, 0);
-    //Get window surface
-    screenSurface = SDL_GetWindowSurface(win);
-    rend = SDL_CreateRenderer(win, -1, 0);
-    SDL_RenderClear(rend);
-
-    for (int i = 0; i < 16; i++)    
-	    balls[i] = {startingPositions[i], {0, 0}, false};
     
 }
 
@@ -59,7 +47,7 @@ void Game::start() {
 }
 
 void Game::main_menu_screen() {
-    drawMainMenuScreen(rend);
+    drawMainMenuScreen();
 
     while(1) {
         //poll Enter Key
@@ -88,14 +76,12 @@ void Game::main_menu_screen() {
 void Game::update() {
     while(ballsMoving(balls)) {
         while( SDL_PollEvent( &event ) ){}
-        drawTable(rend);
 
-        drawBalls(rend, balls);
+        drawTable();
+        drawBalls(balls);
 
-        SDL_RenderPresent(rend);
+        SDL_UpdateWindowSurface(win);
         SDL_Delay(17);
-        SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
-        SDL_RenderClear(rend);
 
         nextState(balls);
     }

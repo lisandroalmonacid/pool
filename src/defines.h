@@ -2,6 +2,8 @@
 #define DEFINES_H
 
 #include "types.h"
+#include <SDL.h>
+
 const float pi = 3.141592;
 const float ballRadius = 20;
 
@@ -20,7 +22,7 @@ const float horizontalTableSize = horizontalScreenSize - 4 * ballRadius;
 const float tableLeftBorder = ballRadius * 2;
 const float tableRightBorder = horizontalScreenSize - ballRadius * 2;
 const float tableUpBorder = ballRadius * 2;
-const float tableDownBorder = verticalScreenSize - 2 * ballRadius;
+const float tableDownBorder = verticalScreenSize - ballRadius * 2;
 
 const float tableHorizontalMiddle = horizontalTableSize/2 + tableLeftBorder;
 const float tableVerticalMiddle = verticalTableSize/2 + tableUpBorder;
@@ -65,5 +67,16 @@ const std::vector<Color> ballColors = {
 	{0, 102, 0, 255}, //ball 14
 	{153, 0, 0, 255}, //ball 15
 };
+
+//SDL Objects
+extern SDL_Event event;
+extern SDL_Window* win;
+extern SDL_Surface* screenSurface;
+extern SDL_Surface* tableSurface;
+extern SDL_Surface* ballsSurface;
+extern SDL_Surface* mainMenuSurface;
+extern SDL_Rect src_rects[16];
+extern SDL_Rect dst_rects[16];
+extern SDL_Renderer* rend;
 
 #endif
