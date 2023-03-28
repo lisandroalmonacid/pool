@@ -73,23 +73,17 @@ void Game::main_menu_screen() {
     return;
 }
 
-void Game::update() {
-    while(ballsMoving(balls)) {
-        while( SDL_PollEvent( &event ) ){}
-
-        drawTable();
-        drawBalls(balls);
-
-        SDL_UpdateWindowSurface(win);
-        SDL_Delay(17);
-
-        nextState(balls);
-    }
-}
-
 void Game::game_loop() {
     while(1) {
-        update();
+        drawTable();
+        drawBalls(balls);
+        if (ballsMoving(balls)) {
+            nextState(balls);
+        } else {
+            drawCue(balls);
+        }
+        SDL_UpdateWindowSurface(win);
+        SDL_Delay(17);
         //Get input
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_KEYDOWN) {
@@ -118,6 +112,9 @@ void Game::finish(int winner) {
 
 void Game::quitGame() {
     SDL_FreeSurface(screenSurface);
+    SDL_FreeSurface(tableSurface);
+    SDL_FreeSurface(mainMenuSurface);
+    SDL_FreeSurface(ballsSurface);
     SDL_DestroyWindow(win);
     SDL_Quit();
 }

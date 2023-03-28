@@ -5,7 +5,7 @@
 #include <SDL.h>
 
 const float pi = 3.141592;
-const float ballRadius = 20;
+const float ballRadius = 28;
 
 //la posición central de la mesa es 0, 0
 //limite izquierdo = -h_table_radius
@@ -19,10 +19,10 @@ const int horizontalScreenSize = 1280;
 const float verticalTableSize = verticalScreenSize - 4 * ballRadius;
 const float horizontalTableSize = horizontalScreenSize - 4 * ballRadius;
 
-const float tableLeftBorder = ballRadius * 2;
-const float tableRightBorder = horizontalScreenSize - ballRadius * 2;
-const float tableUpBorder = ballRadius * 2;
-const float tableDownBorder = verticalScreenSize - ballRadius * 2;
+const float tableLeftBorder = 81;
+const float tableRightBorder = 1198;
+const float tableUpBorder = 75;
+const float tableDownBorder = 643;
 
 const float tableHorizontalMiddle = horizontalTableSize/2 + tableLeftBorder;
 const float tableVerticalMiddle = verticalTableSize/2 + tableUpBorder;

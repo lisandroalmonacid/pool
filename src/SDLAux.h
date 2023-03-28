@@ -10,6 +10,7 @@ void drawRect(Pos start, int width, int height, Color color);
 void drawMainMenuScreen();
 void drawTable();
 void drawBalls(Ball* balls);
+void drawCue(Ball* balls);
 void drawBMP(Pos startPos, char* filepath);
 
 #endif

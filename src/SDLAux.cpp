@@ -1,4 +1,5 @@
 #include "SDLAux.h"
+#include "physics.h"
 #include <fstream>
 #include <iostream>
 #include <bitset>
@@ -65,74 +66,11 @@ void drawBalls(Ball* balls) {
     }
 }
 
-void drawBMP(Pos startPos, char* filepath) {
-/*    BMP bmp;
-
-    std::ifstream bmp_file;
-    bmp_file.open(filepath, std::ios::in | std::ios::binary);
-
-
-    std::cout << "--HEADER--" << std::endl;
-
-    bmp_file.read(bmp.header.signature, 2);
-    bmp.header.signature[2] = '\0';
-    std::cout << "Signature: " << bmp.header.signature << std::endl;
-
-    bmp_file.read(bmp.header.filesize, 4);
-    bmp.header.filesize[5] = '\0';
-    std::cout << "FileSize: " << bmp.header.filesize << std::endl;
-
-    bmp_file.read(bmp.header.reserved, 4);
-    bmp.header.reserved[4] = '\0';
-    std::cout << "Reserved: " << bmp.header.reserved << std::endl;
-
-    bmp_file.read(bmp.header.dataOffset, 4);
-    bmp.header.dataOffset[5] = '\0';
-    std::cout << "Data Offset: " << bmp.header.dataOffset << std::endl;
-
-    std::cout << "--INFO HEADER--" << std::endl;
-
-    bmp_file.read(bmp.infoHeader.size, 4);
-    bmp.infoHeader.size[5] = '\0';
-    std::cout << "Info header size: " << bmp.infoHeader.size << std::endl;
-
-    bmp_file.read(bmp.infoHeader.width, 4);
-    bmp.infoHeader.width[5] = '\0';
-    std::cout << "Img Width: " << bmp.infoHeader.width << std::endl;
-
-    bmp_file.read(bmp.infoHeader.height, 4);
-    bmp.infoHeader.height[5] = '\0';
-    std::cout << "Img Height: " << bmp.infoHeader.height << std::endl;
-
-
-
-  uint16_t planes;
-  uint16_t bitsPerPixel;
-  uint32_t compression;
-  uint32_t imageSize;
-  uint32_t xPixelsPerM;
-  uint32_t yPixelsPerM;
-  uint32_t colorsUsed;
-  uint32_t importantColors;
-  uint32_t* colorTable;
-  Pixel* pixelData;
-
-    //leimos 22 bytes, faltan leer dataOffset - 22 para llegar a lo que nos interesa.
-
-    char r[4];
-    char g[4];
-    char b[4];
-
-    for (int y = startPos.y; y > startPos.y - bmp.height; y--) {
-        for (int x = startPos.x; x < startPos.x + bmp.width; x++) {
-            bmp_file.read(r, 4);
-            bmp_file.read(g, 4);
-            bmp_file.read(b, 4);
-
-            SDL_SetRenderDrawColor(rend, int(r), int(g), int(b), 255);
-            SDL_RenderDrawPoint(rend, x, y);
-        }
-    }
-    bmp_file.close();
-*/    
+void drawCue(Ball* balls) {
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    SDL_Rect rect = {mouseX, mouseY, balls[0].pos.x - mouseX, balls[0].pos.y - mouseY};
+    SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 255, 0, 0));
 }
+
+void drawBMP(Pos startPos, char* filepath) {}

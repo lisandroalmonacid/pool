@@ -87,6 +87,21 @@ void manageCollision(Ball* b1, Ball* b2) {
     }
 }
 
+bool isColliding(Ball* balls, Ball* ball) {
+    //is colliding with other balls
+    for (int i = 1; i < 16; i++) {
+        if (ballsAreColliding(&balls[i], ball)) {
+            return true;
+        }
+    }
+
+    //is colliding with borders
+    if (ball->pos.x <= tableLeftBorder || ball->pos.y <= tableUpBorder ||
+        ball->pos.x >= tableRightBorder || ball->pos.y >= tableDownBorder)
+        return true;
+
+    return false;
+}
 
 
 bool ballsAreColliding(Ball* b1, Ball* b2){

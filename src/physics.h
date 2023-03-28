@@ -29,5 +29,6 @@ void setBallsApart(Ball* b1, Ball* b2);
 float velocityNorm(Ball* b);
 float movementAngle(Ball* b);
 bool isMoving(Ball* b);
+bool isColliding(Ball* balls, Ball* ball);
 
 #endif
