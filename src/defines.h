@@ -27,8 +27,8 @@ const float tableDownBorder = 643;
 const float tableHorizontalMiddle = horizontalTableSize/2 + tableLeftBorder;
 const float tableVerticalMiddle = verticalTableSize/2 + tableUpBorder;
 
-const float frictionEffect = 0.01;
-const float minVelocity = 0.05;
+const float frictionEffect = 0.05;
+const float minVelocity = 0.1; // has to be greater than the frictionEffect.
 
 const std::vector<Pos> startingPositions = {
 	{100, tableVerticalMiddle}, //white_ball

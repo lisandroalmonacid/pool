@@ -4,6 +4,7 @@
 #include "physics.h"
 #include <SDL.h>
 #include "SDLAux.h"
+#include "Ball.h"
 
 class Game {
 public:
@@ -15,7 +16,8 @@ public:
   void finish(int winner);
   void quitGame();
 
-  void update(); //better name?
+  void updateBalls();
+  void manageCollisions();
 
 private:
   bool KEYS[322];  // 322 is the number of SDLK_DOWN events

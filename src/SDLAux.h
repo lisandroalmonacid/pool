@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include "types.h"
 #include "defines.h"
+#include "Ball.h"
 
 void drawCircle(Pos center, float radius, Color Color);
 void drawRect(Pos start, int width, int height, Color color);

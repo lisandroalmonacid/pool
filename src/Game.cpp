@@ -1,6 +1,6 @@
 #include "Game.h"
 #include <iostream>
-// probando
+
 Game::Game() {
 
     //Init KEYS
@@ -78,7 +78,8 @@ void Game::game_loop() {
         drawTable();
         drawBalls(balls);
         if (ballsMoving(balls)) {
-            nextState(balls);
+            updateBalls();
+            manageCollisions();
         } else {
             drawCue(balls);
         }
@@ -103,6 +104,24 @@ void Game::game_loop() {
     }
     if (action == quit) {
         quitGame();
+    }
+}
+
+void Game::updateBalls() {
+    for (int i = 0; i < 16; i++) {
+        if (balls[i].isMoving()) {
+            balls[i].update();
+            manageBorderCollisions(&balls[i]);
+        }
+    }
+}
+
+void Game::manageCollisions() {
+    for (int i = 0; i < 16; i++) {
+        for (int j = i + 1; j < 16; j++){
+            if (ballsAreColliding(&balls[i], &balls[j]))
+                manageCollision(&balls[i], &balls[j]);
+        }
     }
 }
 

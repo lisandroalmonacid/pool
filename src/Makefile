@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp Game.cpp Game.h defines.h types.h physics.h physics.cpp SDLAux.h SDLAux.cpp
+OBJS = main.cpp Game.cpp Game.h defines.h types.h physics.h physics.cpp SDLAux.h SDLAux.cpp Ball.h Ball.cpp
 
 #CC specifies which compiler we're using
 CC = g++
