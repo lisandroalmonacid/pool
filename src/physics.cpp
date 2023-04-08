@@ -13,22 +13,34 @@ void updateBalls(Ball* balls) {
 }
 
 void manageBorderCollisions(Ball* b) {
-    for (int i = 1; i < 24; i++) {
+    for (int i = 1; i < 25; i++) {
         if (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) {
-            SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
-            SDL_RenderDrawLine(rend, tableEdges[i-1].x, tableEdges[i-1].y, tableEdges[i].x, tableEdges[i].y);
-            SDL_Rect rect = {b->pos.x - ballRadius, b->pos.y - ballRadius, ballRadius*2,ballRadius*2};
-            SDL_RenderDrawRect(rend, &rect);
-            SDL_RenderPresent(rend);
-            SDL_Delay(50);
-            SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
-            SDL_RenderClear(rend);
+            // SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
+            // SDL_RenderDrawLine(rend, tableEdges[i-1].x, tableEdges[i-1].y, tableEdges[i].x, tableEdges[i].y);
+            // SDL_Rect rect = {b->pos.x - ballRadius, b->pos.y - ballRadius, ballRadius*2,ballRadius*2};
+            // SDL_RenderDrawRect(rend, &rect);
+            // SDL_RenderPresent(rend);
+            // SDL_Delay(50);
+            // SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+            // SDL_RenderClear(rend);
             Vel n = findUnitNormalVector(tableEdges[i-1], tableEdges[i]);
             //b->vel = b->vel - 2 * (b->vel * n) * n. Consider adding vector operators. 
             float vDotN = b->vel.x * n.x + b->vel.y + n.y;
             b->vel = {b->vel.x - 2*vDotN * n.x, b->vel.y - 2*vDotN * n.y};
+            while (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) { b->update();}
         }
     }
+    // b->pos = {97, 300};
+    // b->vel = {-1, 0};
+    // isBallCollidingWithWall(b, {81, 592}, {81, 127});
+    // SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
+    // SDL_RenderDrawLine(rend, 81, 592, 81, 127);
+    // SDL_Rect rect = {b->pos.x - ballRadius, b->pos.y - ballRadius, ballRadius*2,ballRadius*2};
+    // SDL_RenderDrawRect(rend, &rect);
+    // SDL_RenderPresent(rend);
+    // SDL_Delay(5000);
+    // SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+    // SDL_RenderClear(rend);
 }
 
 Vel findUnitNormalVector(Pos p1, Pos p2) {
@@ -52,9 +64,8 @@ bool isBallCollidingWithWall (Ball* b, Pos p1, Pos p2) {
     else ortDir = {1, -wallDir.x/wallDir.y};
 
     Pos iPos = intersection(wallDir, p1, ortDir, b->pos);
-
     Pos closestPoint;
-    if ( isPointInLine(iPos, p1, p2) ) {
+    if (isPointInLine(iPos, p1, p2)) {
         closestPoint = iPos;
     } else {
         closestPoint = pointsNorm(b->pos, p1) < pointsNorm(b->pos, p2) ? p1 : p2;
@@ -69,7 +80,8 @@ bool isPointInLine(Pos p, Pos l1, Pos l2) {
 }
 
 Pos intersection(Dir v1, Pos p1, Dir v2, Pos p2) {
-    if (v1.x == 0 || v1.y*v2.x == v2.y ) return {p1};
+    if (v1.x == 0) return {p1.x, p2.y}; // edge case: vertical lines.
+    else if ( v1.y/v1.x == v2.y/v2.x ) return {-1, -1}; // edge case: parallel lines.
     float k2 = (p2.y - p1.y - v1.y*(p2.x - p1.x)/v1.x) / (-v2.y + v1.y*v2.x/v1.x);
     return {k2*v2.x + p2.x, k2*v2.y + p2.y};
 }

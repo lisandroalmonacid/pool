@@ -24,7 +24,7 @@ const float tableRightBorder = 1198;
 const float tableUpBorder = 75;
 const float tableDownBorder = 643;
 
-const Pos tableEdges[24] = {{111, 53},
+const Pos tableEdges[25] = {{111, 53},
 							{134, 75},
 							{601, 75},
 							{610, 53},
@@ -47,7 +47,8 @@ const Pos tableEdges[24] = {{111, 53},
 							{59, 614},
 							{81, 592},
 							{81, 127},
-							{59, 104}
+							{59, 104},
+							{111, 53}
 							};
 
 const float tableHorizontalMiddle = horizontalTableSize/2 + tableLeftBorder;
