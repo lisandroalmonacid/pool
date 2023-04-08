@@ -1,4 +1,6 @@
 #include "physics.h"
+#include "SDLAux.h"
+#include <iostream>
 
 
 //UPDATE BALLS SECTION
@@ -10,26 +12,66 @@ void updateBalls(Ball* balls) {
     }
 }
 
-//If the ball went past the table edge, get it right in the edge and invert the velocity.
 void manageBorderCollisions(Ball* b) {
-    if (b->isIn) return;
+    for (int i = 1; i < 24; i++) {
+        if (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) {
+            SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
+            SDL_RenderDrawLine(rend, tableEdges[i-1].x, tableEdges[i-1].y, tableEdges[i].x, tableEdges[i].y);
+            SDL_Rect rect = {b->pos.x - ballRadius, b->pos.y - ballRadius, ballRadius*2,ballRadius*2};
+            SDL_RenderDrawRect(rend, &rect);
+            SDL_RenderPresent(rend);
+            SDL_Delay(50);
+            SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+            SDL_RenderClear(rend);
+            Vel n = findUnitNormalVector(tableEdges[i-1], tableEdges[i]);
+            //b->vel = b->vel - 2 * (b->vel * n) * n. Consider adding vector operators. 
+            float vDotN = b->vel.x * n.x + b->vel.y + n.y;
+            b->vel = {b->vel.x - 2*vDotN * n.x, b->vel.y - 2*vDotN * n.y};
+        }
+    }
+}
 
-    if (b->pos.x > tableRightBorder - ballRadius){
-        b->pos.x = tableRightBorder - ballRadius;
-        b->vel.x = -b->vel.x;
+Vel findUnitNormalVector(Pos p1, Pos p2) {
+    if (p1.x == p2.x) return {1, 0};
+    if (p1.y == p2.y) return {0, 1};
+
+    float m = (p2.y - p1.y)/(p2.x-p1.x);
+    float mOrt = -1/m;
+    float norm = sqrt(1+mOrt*mOrt);
+    return {1/norm, mOrt/norm};
+}
+
+bool isBallCollidingWithWall (Ball* b, Pos p1, Pos p2) {
+    //obtener dirección de la recta que pasa por v1, v2
+    Dir wallDir = {p2.x - p1.x, p2.y - p1.y};
+
+    //obtener dirección ortogonal a la recta
+    Dir ortDir;
+    if (wallDir.y == 0) ortDir = {0, 1};
+    else if (wallDir.x == 0) ortDir = {1, 0};
+    else ortDir = {1, -wallDir.x/wallDir.y};
+
+    Pos iPos = intersection(wallDir, p1, ortDir, b->pos);
+
+    Pos closestPoint;
+    if ( isPointInLine(iPos, p1, p2) ) {
+        closestPoint = iPos;
+    } else {
+        closestPoint = pointsNorm(b->pos, p1) < pointsNorm(b->pos, p2) ? p1 : p2;
     }
-    if (b->pos.x < tableLeftBorder + ballRadius) {
-        b->pos.x = tableLeftBorder + ballRadius;
-        b->vel.x = -b->vel.x;
-    }
-    if (b->pos.y > tableDownBorder - ballRadius){
-        b->pos.y = tableDownBorder - ballRadius;
-        b->vel.y = -b->vel.y;
-    }
-    if (b->pos.y < tableUpBorder + ballRadius) {
-        b->pos.y = tableUpBorder + ballRadius;
-        b->vel.y = -b->vel.y;
-    }
+    return (pointsNorm(b->pos, closestPoint) <= ballRadius);
+}
+
+bool isPointInLine(Pos p, Pos l1, Pos l2) {
+    bool betweenX = ((l1.x <= p.x) && (p.x <= l2.x)) || ((l1.x >= p.x) && (p.x >= l2.x));
+    bool betweenY = ((l1.y <= p.y) && (p.y <= l2.y)) || ((l1.y >= p.y) && (p.y >= l2.y));
+    return betweenX && betweenY;
+}
+
+Pos intersection(Dir v1, Pos p1, Dir v2, Pos p2) {
+    if (v1.x == 0 || v1.y*v2.x == v2.y ) return {p1};
+    float k2 = (p2.y - p1.y - v1.y*(p2.x - p1.x)/v1.x) / (-v2.y + v1.y*v2.x/v1.x);
+    return {k2*v2.x + p2.x, k2*v2.y + p2.y};
 }
 
 //MANAGE COLLISIONS
@@ -80,6 +122,12 @@ bool ballsAreColliding(Ball* b1, Ball* b2){
     return norm <= (2 * ballRadius);
 }
 
+float pointsNorm(Pos p1, Pos p2) {
+    float dist_x = p1.x - p2.x;
+    float dist_y = p1.y - p2.y;
+
+    return sqrt(pow(dist_x, 2) + pow(dist_y, 2));
+}
 
 void movingCollision(Ball* b1, Ball* b2) {
     float iAngle = impactAngle(b1, b2);

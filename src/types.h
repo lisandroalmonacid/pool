@@ -15,6 +15,11 @@ struct Vel {
   float y;
 };
 
+struct Dir {
+  float x;
+  float y;
+};
+
 enum Action {mainMenu, game, quit};
 
 struct Color {

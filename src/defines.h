@@ -4,7 +4,7 @@
 #include "types.h"
 #include <SDL.h>
 
-const float pi = 3.141592;
+const float pocketRadius = 40;
 const float ballRadius = 28;
 
 //la posición central de la mesa es 0, 0
@@ -24,6 +24,32 @@ const float tableRightBorder = 1198;
 const float tableUpBorder = 75;
 const float tableDownBorder = 643;
 
+const Pos tableEdges[24] = {{111, 53},
+							{134, 75},
+							{601, 75},
+							{610, 53},
+							{669, 53},
+							{679, 75},
+							{1160, 75},
+							{1169, 53},
+							{1220, 104},
+							{1198, 126},
+							{1198, 591},
+							{1220, 615},
+							{1169, 665},
+							{1160, 643},
+							{678, 643},
+							{669, 665},
+							{610, 665},
+							{601, 643},
+							{133, 643},
+							{110, 665},
+							{59, 614},
+							{81, 592},
+							{81, 127},
+							{59, 104}
+							};
+
 const float tableHorizontalMiddle = horizontalTableSize/2 + tableLeftBorder;
 const float tableVerticalMiddle = verticalTableSize/2 + tableUpBorder;
 
@@ -31,7 +57,7 @@ const float frictionEffect = 0.05;
 const float minVelocity = 0.1; // has to be greater than the frictionEffect.
 
 const std::vector<Pos> startingPositions = {
-	{100, tableVerticalMiddle}, //white_ball
+	{120, tableVerticalMiddle}, //white_ball
 	{700, tableVerticalMiddle}, //ball 1
 	{700 + ballRadius * 2, tableVerticalMiddle + ballRadius}, //ball 2
 	{700 + ballRadius * 2, tableVerticalMiddle - ballRadius}, //ball 3
