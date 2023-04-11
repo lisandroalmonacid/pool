@@ -11,7 +11,7 @@ public:
     Vel vel;
 
     bool isIn;
-    //int number;
+    int number;
     //SDL_Texture* sprite;
 
     void update();

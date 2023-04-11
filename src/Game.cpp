@@ -9,7 +9,7 @@ Game::Game() {
     }
 
     for (int i = 0; i < 16; i++)    
-	    balls[i] = {startingPositions[i], {0, 0}, false};
+	    balls[i] = {startingPositions[i], {0, 0}, false, i};
 
     //Init Source Rectangles
     for (int i = 0; i < 8; i++) {

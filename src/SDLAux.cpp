@@ -75,3 +75,14 @@ void drawCue(Ball* balls) {
 }
 
 void drawBMP(Pos startPos, char* filepath) {}
+
+void drawCollision(Ball* b, Pos l1, Pos l2) {
+    SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
+    SDL_RenderDrawLine(rend, l1.x, l1.y, l2.x, l2.y);
+    SDL_Rect rect = {b->pos.x - ballRadius, b->pos.y - ballRadius, ballRadius*2,ballRadius*2};
+    SDL_RenderDrawRect(rend, &rect);
+    SDL_RenderPresent(rend);
+    SDL_Delay(50);
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
+    SDL_RenderClear(rend);
+}

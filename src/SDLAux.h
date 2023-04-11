@@ -13,5 +13,6 @@ void drawTable();
 void drawBalls(Ball* balls);
 void drawCue(Ball* balls);
 void drawBMP(Pos startPos, char* filepath);
+void drawCollision(Ball* b, Pos l1, Pos l2);
 
 #endif

@@ -8,6 +8,7 @@
 
 
 //manage collisions
+void manageBallCollisions(Ball* balls, Ball* b);
 void manageCollision(Ball* b1, Ball* b2);
 bool ballsAreColliding(Ball* b1, Ball* b2);
 void ballCollision(Ball* b1, Ball* b2);

@@ -8,6 +8,7 @@
 void updateBalls(Ball* balls) {
     for (int i = 0; i < 16; i++) {
         balls[i].update();
+        manageBallCollisions(balls, &balls[i]);
         manageBorderCollisions(&balls[i]);
     }
 }
@@ -15,32 +16,16 @@ void updateBalls(Ball* balls) {
 void manageBorderCollisions(Ball* b) {
     for (int i = 1; i < 25; i++) {
         if (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) {
-            // SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
-            // SDL_RenderDrawLine(rend, tableEdges[i-1].x, tableEdges[i-1].y, tableEdges[i].x, tableEdges[i].y);
-            // SDL_Rect rect = {b->pos.x - ballRadius, b->pos.y - ballRadius, ballRadius*2,ballRadius*2};
-            // SDL_RenderDrawRect(rend, &rect);
-            // SDL_RenderPresent(rend);
-            // SDL_Delay(50);
-            // SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
-            // SDL_RenderClear(rend);
+            // drawCollision(b, tableEdges[i-1], tableEdges[i]);
+            Vel oldVel = b->vel;
             Vel n = findUnitNormalVector(tableEdges[i-1], tableEdges[i]);
             //b->vel = b->vel - 2 * (b->vel * n) * n. Consider adding vector operators. 
-            float vDotN = b->vel.x * n.x + b->vel.y + n.y;
+            float vDotN = b->vel.x * n.x + b->vel.y * n.y;
             b->vel = {b->vel.x - 2*vDotN * n.x, b->vel.y - 2*vDotN * n.y};
-            while (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) { b->update();}
+            // while (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) { b->update();}
+            b->pos.x -= oldVel.x; b->pos.y -= oldVel.y;
         }
     }
-    // b->pos = {97, 300};
-    // b->vel = {-1, 0};
-    // isBallCollidingWithWall(b, {81, 592}, {81, 127});
-    // SDL_SetRenderDrawColor(rend, 255, 0, 0, 0);
-    // SDL_RenderDrawLine(rend, 81, 592, 81, 127);
-    // SDL_Rect rect = {b->pos.x - ballRadius, b->pos.y - ballRadius, ballRadius*2,ballRadius*2};
-    // SDL_RenderDrawRect(rend, &rect);
-    // SDL_RenderPresent(rend);
-    // SDL_Delay(5000);
-    // SDL_SetRenderDrawColor(rend, 0, 0, 0, 0);
-    // SDL_RenderClear(rend);
 }
 
 Vel findUnitNormalVector(Pos p1, Pos p2) {
@@ -87,11 +72,11 @@ Pos intersection(Dir v1, Pos p1, Dir v2, Pos p2) {
 }
 
 //MANAGE COLLISIONS
-void manageCollisions(Ball* balls) {
+void manageBallCollisions(Ball* balls, Ball* b) {
     for (int i = 0; i < 16; i++) {
-        for (int j = i + 1; j < 16; j++){
-            if (ballsAreColliding(&balls[i], &balls[j]))
-                manageCollision(&balls[i], &balls[j]);
+        if ((ballsAreColliding(b, &balls[i])) && (b->number != balls[i].number)) {
+            b->pos.x -= b->vel.x; b->pos.y -= b->vel.y;
+            manageCollision(b, &balls[i]);
         }
     }
 }
@@ -156,8 +141,12 @@ void movingCollision(Ball* b1, Ball* b2) {
     float v2NewX = v1 * cos(a1 - iAngle) * cos(iAngle) + v2 * sin(a2 - iAngle) * cos(iAngle + M_PI/2);
     float v2NewY = v1 * cos(a1 - iAngle) * sin(iAngle) + v2 * sin(a2 - iAngle) * sin(iAngle + M_PI/2);
 
+    Vel oldVel = b1->vel;
+
     b1->vel.x = v1NewX; b1->vel.y = v1NewY;
     b2->vel.x = v2NewX; b2->vel.y = v2NewY;
+
+    b1->pos.x -= oldVel.x; b1->pos.y -= oldVel.y;
     
     setBallsApart(b1, b2);
 }
@@ -177,8 +166,12 @@ void stationaryCollision(Ball* b1, Ball* b2) {
     float v2NewX = v2_new * cos(v2_newAngle);
     float v2NewY = v2_new * sin(v2_newAngle);
 
+    Vel oldVel = b1->vel;
+
     b1->vel.x = v1NewX; b1->vel.y = v1NewY;
     b2->vel.x = v2NewX; b2->vel.y = v2NewY;
+
+    b1->pos.x -= oldVel.x; b1->pos.y -= oldVel.y;
 
     setBallsApart(b1, b2);
 }
