@@ -3,9 +3,12 @@
 
 #include "types.h"
 #include <SDL.h>
+#include <SDL_image.h>
 
 const float pocketRadius = 40;
-const float ballRadius = 28;
+const float ballRadius = 23;
+const float cueW = 3516/3;
+const float cueH = 61/3;
 
 //la posición central de la mesa es 0, 0
 //limite izquierdo = -h_table_radius
@@ -76,6 +79,25 @@ const std::vector<Pos> startingPositions = {
 	{700 + ballRadius * 8, tableVerticalMiddle - 4 * ballRadius}, //ball 15
 };
 
+/*const std::vector<Pos> startingPositions = {
+	{120, tableVerticalMiddle}, //white_ball
+	{-100, -100}, //white_ball
+	{-1000, -1000}, //white_ball
+	{-10000, -10000}, //white_ball
+	{-100000, -1000000}, //white_ball
+	{-1, -1000000}, //white_ball
+	{-100000000, -1}, //white_ball
+	{-100, -1000000}, //white_ball
+	{-10000, -100}, //white_ball
+	{-1000000000, -100000000000}, //white_ball
+	{-100000000000, -10000000000}, //white_ball
+	{-10000000000000, -100000000000000}, //white_ball
+	{-100000000000, -100000000000000000}, //white_ball
+	{-1000000000000000000, -100000000000000000}, //white_ball
+	{-100000000000, -100000000000000000}, //white_ball
+	{700, tableVerticalMiddle}, //ball 1
+};*/
+
 const std::vector<Color> ballColors = {
 	{255, 255, 255, 255}, //white_ball
 	{255, 255, 0, 255}, //ball 1, yellow
@@ -98,12 +120,12 @@ const std::vector<Color> ballColors = {
 //SDL Objects
 extern SDL_Event event;
 extern SDL_Window* win;
-extern SDL_Surface* screenSurface;
-extern SDL_Surface* tableSurface;
-extern SDL_Surface* ballsSurface;
-extern SDL_Surface* mainMenuSurface;
-extern SDL_Rect src_rects[16];
-extern SDL_Rect dst_rects[16];
 extern SDL_Renderer* rend;
+
+extern SDL_Texture* tableTexture;
+extern SDL_Texture* mainMenuTexture;
+extern SDL_Texture* cueTexture;
+extern SDL_Texture* triangleTexture;
+extern SDL_Texture* trajectoryBallTexture;
 
 #endif

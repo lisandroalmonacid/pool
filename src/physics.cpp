@@ -1,31 +1,35 @@
 #include "physics.h"
-#include "SDLAux.h"
 #include <iostream>
+#include "SDLAux.h"
 
 
 //UPDATE BALLS SECTION
 
-void updateBalls(Ball* balls) {
-    for (int i = 0; i < 16; i++) {
+/*void updateBalls(Ball* balls) {
+    for (int i = 0; i < balls.size(); i++) {
         balls[i].update();
         manageBallCollisions(balls, &balls[i]);
         manageBorderCollisions(&balls[i]);
     }
-}
+}*/
 
 void manageBorderCollisions(Ball* b) {
     for (int i = 1; i < 25; i++) {
         if (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) {
-            // drawCollision(b, tableEdges[i-1], tableEdges[i]);
-            Vel oldVel = b->vel;
-            Vel n = findUnitNormalVector(tableEdges[i-1], tableEdges[i]);
-            //b->vel = b->vel - 2 * (b->vel * n) * n. Consider adding vector operators. 
-            float vDotN = b->vel.x * n.x + b->vel.y * n.y;
-            b->vel = {b->vel.x - 2*vDotN * n.x, b->vel.y - 2*vDotN * n.y};
-            // while (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) { b->update();}
-            b->pos.x -= oldVel.x; b->pos.y -= oldVel.y;
+            manageBorderCollision(b, tableEdges[i-1], tableEdges[i]);
         }
     }
+}
+
+void manageBorderCollision(Ball* b, Pos l1, Pos l2) {
+    // drawCollision(b, l1, l2);
+    Vel oldVel = b->vel;
+    Vel n = findUnitNormalVector(l1, l2);
+    //b->vel = b->vel - 2 * (b->vel * n) * n. Consider adding vector operators. 
+    float vDotN = b->vel.x * n.x + b->vel.y * n.y;
+    b->vel = {b->vel.x - 2*vDotN * n.x, b->vel.y - 2*vDotN * n.y};
+    // while (isBallCollidingWithWall(b, l1, l2) { b->update();}
+    b->pos.x -= oldVel.x; b->pos.y -= oldVel.y;
 }
 
 Vel findUnitNormalVector(Pos p1, Pos p2) {
@@ -72,14 +76,13 @@ Pos intersection(Dir v1, Pos p1, Dir v2, Pos p2) {
 }
 
 //MANAGE COLLISIONS
-void manageBallCollisions(Ball* balls, Ball* b) {
-    for (int i = 0; i < 16; i++) {
+/*void manageBallCollisions(Ball* balls, Ball* b) {
+    for (int i = 0; i < balls.size(); i++) {
         if ((ballsAreColliding(b, &balls[i])) && (b->number != balls[i].number)) {
-            b->pos.x -= b->vel.x; b->pos.y -= b->vel.y;
             manageCollision(b, &balls[i]);
         }
     }
-}
+}*/
 
 void manageCollision(Ball* b1, Ball* b2) {
     if (b1->isMoving() && b2->isMoving()) {
@@ -91,9 +94,9 @@ void manageCollision(Ball* b1, Ball* b2) {
     }
 }
 
-bool isColliding(Ball* balls, Ball* ball) {
+/*bool isColliding(Ball* balls, Ball* ball) {
     //is colliding with other balls
-    for (int i = 1; i < 16; i++) {
+    for (int i = 1; i < balls.size(); i++) {
         if (ballsAreColliding(&balls[i], ball)) {
             return true;
         }
@@ -105,7 +108,7 @@ bool isColliding(Ball* balls, Ball* ball) {
         return true;
 
     return false;
-}
+}*/
 
 
 bool ballsAreColliding(Ball* b1, Ball* b2){
@@ -135,18 +138,16 @@ void movingCollision(Ball* b1, Ball* b2) {
     float a1 = b1->movementAngle();
     float a2 = b2->movementAngle();
 
-    float v1NewX = v2 * cos(a2 - iAngle) * cos(iAngle) + v1 * sin(a1 - iAngle) * cos(iAngle + M_PI/2);
-    float v1NewY = v2 * cos(a2 - iAngle) * sin(iAngle) + v1 * sin(a1 - iAngle) * sin(iAngle + M_PI/2);
+    float v1NewX = v2 * cosf(a2 - iAngle) * cosf(iAngle) + v1 * sinf(a1 - iAngle) * cosf(iAngle + M_PI/2);
+    float v1NewY = v2 * cosf(a2 - iAngle) * sinf(iAngle) + v1 * sinf(a1 - iAngle) * sinf(iAngle + M_PI/2);
 
-    float v2NewX = v1 * cos(a1 - iAngle) * cos(iAngle) + v2 * sin(a2 - iAngle) * cos(iAngle + M_PI/2);
-    float v2NewY = v1 * cos(a1 - iAngle) * sin(iAngle) + v2 * sin(a2 - iAngle) * sin(iAngle + M_PI/2);
-
-    Vel oldVel = b1->vel;
+    float v2NewX = v1 * cosf(a1 - iAngle) * cosf(iAngle) + v2 * sinf(a2 - iAngle) * cosf(iAngle + M_PI/2);
+    float v2NewY = v1 * cosf(a1 - iAngle) * sinf(iAngle) + v2 * sinf(a2 - iAngle) * sinf(iAngle + M_PI/2);
 
     b1->vel.x = v1NewX; b1->vel.y = v1NewY;
     b2->vel.x = v2NewX; b2->vel.y = v2NewY;
 
-    b1->pos.x -= oldVel.x; b1->pos.y -= oldVel.y;
+    //drawBallCollision(b1, b2);
     
     setBallsApart(b1, b2);
 }
@@ -154,24 +155,20 @@ void movingCollision(Ball* b1, Ball* b2) {
 void stationaryCollision(Ball* b1, Ball* b2) {
     float iAngle = impactAngle(b1, b2);
 
-    float v1_new = b1->velocityNorm() * sqrt((1 + cos(iAngle))/2);
-    float v2_new = b1->velocityNorm() * sin(iAngle / 2);
+    float v1NewNorm = b1->velocityNorm() * sqrt((1 + cosf(iAngle))/2);
+    float v2NewNorm = b1->velocityNorm() * sinf(iAngle / 2);
 
-    float v1_newAngle = iAngle + M_PI/2;
-    float v2_newAngle = iAngle;
+    float v1NewAngle = iAngle + M_PI/2;
+    float v2NewAngle = iAngle;
 
-    float v1NewX = v1_new * cos(v1_newAngle);
-    float v1NewY = v1_new * sin(v1_newAngle);
+    b1->vel = {v1NewNorm * cosf(v1NewAngle),  v1NewNorm * sinf(v1NewAngle)};
+    b2->vel = {v2NewNorm * cosf(v2NewAngle),  v2NewNorm * sinf(v2NewAngle)};
 
-    float v2NewX = v2_new * cos(v2_newAngle);
-    float v2NewY = v2_new * sin(v2_newAngle);
+    Vel vel2NewVector = {b2->pos.x - b1->pos.x, b2->pos.y - b1->pos.y};
+    Vel vel2NewUnitVector = {vel2NewVector.x/pointsNorm({b2->pos.x - b1->pos.x, b2->pos.y - b1->pos.y}, {0, 0})};
+    b2->vel = {vel2NewUnitVector.x * v2NewNorm, vel2NewUnitVector.y * v2NewNorm};
 
-    Vel oldVel = b1->vel;
-
-    b1->vel.x = v1NewX; b1->vel.y = v1NewY;
-    b2->vel.x = v2NewX; b2->vel.y = v2NewY;
-
-    b1->pos.x -= oldVel.x; b1->pos.y -= oldVel.y;
+    //drawBallCollision(b1, b2);
 
     setBallsApart(b1, b2);
 }
@@ -191,6 +188,16 @@ float impactAngle(Ball* b1, Ball* b2) {
     }
     //get it inside interval (0, 2pi)
     return fmod(impactAngle + 2*M_PI, 2*M_PI);
+}
+
+float angleBetweenPoints(Pos p1, Pos p2) {
+    float dist_x = p1.x - p2.x;
+    float dist_y = p1.y - p2.y;
+    float angle = atanf(dist_y/dist_x);
+    
+    if (dist_x < 0) angle += M_PI;
+
+    return fmod(angle + 2*M_PI, 2*M_PI);
 }
 
 void setBallsApart(Ball* b1, Ball* b2) {
@@ -215,11 +222,11 @@ void setBallsApart(Ball* b1, Ball* b2) {
 
 
 //AUX
-bool ballsMoving(Ball* balls) {
+bool ballsMoving(std::vector<Ball*> balls) {
     bool res = false;
 
-    for (int i = 0; !res && i < 16; i++)
-        res = balls[i].isMoving();
+    for (int i = 0; !res && i < balls.size(); i++)
+        res = balls[i]->isMoving();
 
     return res;
 }

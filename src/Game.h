@@ -3,26 +3,32 @@
 
 #include "physics.h"
 #include <SDL.h>
-#include "SDLAux.h"
+#include <SDL_image.h>
+#include <vector>
 #include "Ball.h"
 
 class Game {
 public:
   Game();
-  void main_menu_screen();
+  void mainMenuScreen();
   void game_screen();
-  void game_loop();
+  void gameLoop();
   void start();
   void finish(int winner);
   void quitGame();
 
   void updateBalls();
   void manageCollisions();
+  void manageBorderCollisions(Ball* b);
 
 private:
   bool KEYS[322];  // 322 is the number of SDLK_DOWN events
+  int mouseX;
+  int mouseY;
+  bool mouseClick;
+  int shotForce;
   Action action;
-  Ball balls[16];
+  std::vector<Ball*> balls;
 };
 
 #endif
