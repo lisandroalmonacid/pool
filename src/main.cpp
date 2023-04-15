@@ -14,6 +14,8 @@ SDL_Texture* triangleTexture;
 SDL_Texture* trajectoryBallTexture;
 
 int main(int argc, char** args) {
+
+
     std::cout << "Launching game." << std::endl;
 
     //Init SDL
@@ -21,21 +23,15 @@ int main(int argc, char** args) {
         std::cout <<  "SDL could not initialize! SDL_Error:" << SDL_GetError() << std::endl;
     }
 
-    SDL_PollEvent(&event);
-    std::cout << "before image." << std::endl;
     //Init IMG
     if( IMG_Init( IMG_INIT_PNG ) < 0 ) {
         std::cout <<  "SDL image could not initialize! SDL_Error:" << IMG_GetError() << std::endl;
     }
 
-    std::cout << "after image." << std::endl;
-
     //Init Window and Renderer
     win = SDL_CreateWindow("Pool", 10, 10, horizontalScreenSize, verticalScreenSize, 0);
     rend = SDL_CreateRenderer(win, -1, 0);
     SDL_RenderClear(rend);
-
-    std::cout << "Window and render initialized." << std::endl;
 
     //Init Textures
     tableTexture = IMG_LoadTexture(rend, "img/table.png");
@@ -53,5 +49,5 @@ int main(int argc, char** args) {
     SDL_DestroyRenderer(rend);
     SDL_DestroyWindow(win);
     SDL_Quit();
-
+    
 }

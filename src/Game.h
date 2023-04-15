@@ -18,8 +18,10 @@ public:
   void quitGame();
 
   void updateBalls();
-  void manageCollisions();
+  void manageBallCollisions();
   void manageBorderCollisions(Ball* b);
+  void processEventQueue();
+  void render();
 
 private:
   bool KEYS[322];  // 322 is the number of SDLK_DOWN events

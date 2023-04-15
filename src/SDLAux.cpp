@@ -92,7 +92,7 @@ void drawBallTrajectory(std::vector<Ball*> balls, float mouseX, float cueAngle) 
     
     Pos iWallMin = {-10000, -10000};
     for (int i = 1; i < 25; i++) {
-        Dir dWall = {tableEdges[i].x - tableEdges[i-1].x, tableEdges[i].y - tableEdges[i-1].y};
+        Vector2d dWall = {tableEdges[i].x - tableEdges[i-1].x, tableEdges[i].y - tableEdges[i-1].y};
         Pos iWall = intersection({cos(cueAngle), sin(cueAngle)}, balls[0]->pos, dWall, tableEdges[i]);
         if ( isPointInLine(iWall, balls[0]->pos, lineEnd) &&
                 isPointInLine(iWall, tableEdges[i-1], tableEdges[i]) &&

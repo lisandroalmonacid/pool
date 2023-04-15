@@ -9,12 +9,11 @@ Game::Game() {
     }
     mouseClick = false;
     shotForce = 0;
-    std::cout << "init balls" << std::endl;
+
     for (int i = 0; i < 16; i++) {
 	    Ball* b = new Ball(startingPositions[i], i);
         balls.push_back(b);
     }
-    std::cout << "done" << std::endl;
 }
 
 void Game::start() {
@@ -60,88 +59,29 @@ void Game::mainMenuScreen() {
 }
 
 void Game::gameLoop() {
-    std::cout << "game loop!" << std::endl;
     while(action == game) {
-        SDL_RenderCopy(rend, tableTexture, nullptr, nullptr); //draw table
-
-        for (int i = 0; i < balls.size(); i++)
-            balls[i]->draw();
+        processEventQueue();
 
         if (ballsMoving(balls)) {
             updateBalls();
-            for (int i = 0; i < balls.size(); i++) {
-                if (balls[i]->isIn) {
-                    balls.erase(balls.begin() + i);
-                }
-            }
-            manageCollisions();
+            manageBallCollisions();
         } else {
-            //draw cue
-            SDL_GetMouseState(&mouseX, &mouseY);
-            float cueAngle = angleBetweenPoints(balls[0]->pos, {mouseX, mouseY});
-            float x = ((cueW + 2*ballRadius + shotForce) * cos(cueAngle) + cueW)/2;
-            float y = ((cueW + 2*ballRadius + shotForce) * sin(cueAngle) + cueH)/2;
-            SDL_Rect dstRect = {balls[0]->pos.x - x, balls[0]->pos.y - y, cueW, cueH};
-            SDL_RenderCopyEx(rend, cueTexture, nullptr, &dstRect, (cueAngle) * 180 / M_PI, nullptr, SDL_FLIP_HORIZONTAL);
-
-            //drawBallTrajectory(balls, mouseX, cueAngle);
-            
-        }
-        SDL_RenderPresent(rend);
-        SDL_Delay(17);
-        SDL_RenderClear(rend);
-
-        //Get input
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_KEYDOWN:
-                KEYS[event.key.keysym.sym] = true;
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                mouseClick = true;
-                break;
-            case SDL_MOUSEBUTTONUP:
-                mouseClick = false;
-                break;
-            case SDL_QUIT:
-                action = quit;
-                break;
-            default:
-                break;
+            if (balls[0]->isIn) {
+                balls[0]->isIn = false;
+                balls[0]->pos = startingPositions[0];
+                balls[0]->vel = {0, 0};
             }
-        }
 
-        //shot!
-        if (!(ballsMoving(balls))) {
             if (mouseClick) {
-                if (shotForce < 100) shotForce = shotForce + 2;
+                if (shotForce < 25) shotForce = shotForce + 2;
             } else {
-                SDL_GetMouseState(&mouseX, &mouseY);
-                float cueAngle = angleBetweenPoints({mouseX, mouseY}, balls[0]->pos);
-                balls[0]->vel.x = shotForce/4 * cos(cueAngle + M_PI);
-                balls[0]->vel.y = shotForce/4 * sin(cueAngle + M_PI);
+                float cueAngle = angleBetweenPoints(balls[0]->pos, {mouseX, mouseY});
+                balls[0]->vel.x = shotForce * cos(cueAngle);
+                balls[0]->vel.y = shotForce * sin(cueAngle);
                 shotForce = 0;
             }
         }
-
-        //si es escape, hago break
-        if (KEYS[SDLK_ESCAPE]) {
-            KEYS[SDLK_ESCAPE] = false;
-            action = quit;
-        }
-        if (KEYS[SDLK_r]) {
-            KEYS[SDLK_r] = false;
-            action = mainMenu;
-        }
-    }
-    switch (action) {
-    case mainMenu:
-        mainMenuScreen();
-        break;
-    case quit:
-        quitGame();
-    default:
-        break;
+        render();
     }
 }
 
@@ -154,11 +94,11 @@ void Game::updateBalls() {
     }
 }
 
-void Game::manageCollisions() {
+void Game::manageBallCollisions() {
     for (int i = 0; i < balls.size(); i++) {
         for (int j = i + 1; j < balls.size(); j++){
             if (ballsAreColliding(balls[i], balls[j]))
-                manageCollision(balls[i], balls[j]);
+                ballCollision(balls[i], balls[j]);
         }
     }
 }
@@ -168,11 +108,67 @@ void Game::manageBorderCollisions(Ball* b) {
         if (isBallCollidingWithWall(b, tableEdges[i-1], tableEdges[i])) {
             if (i % 4 == 0) {
                 b->isIn = true;
+                b->pos = inPositions[b->number];
+                b->vel = {0, 0};
             } else {
-                manageBorderCollision(b, tableEdges[i-1], tableEdges[i]);
+                borderCollision(b, tableEdges[i-1], tableEdges[i]);
             }
         }
     }
+}
+
+void Game::processEventQueue() {
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_KEYDOWN:
+            KEYS[event.key.keysym.sym] = true;
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            mouseClick = true;
+            break;
+        case SDL_MOUSEBUTTONUP:
+            mouseClick = false;
+            break;
+        case SDL_QUIT:
+            action = quit;
+            break;
+        default:
+            break;
+        }
+    }
+
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    if (KEYS[SDLK_ESCAPE]) {
+        KEYS[SDLK_ESCAPE] = false;
+        action = quit;
+    }
+    if (KEYS[SDLK_r]) {
+        KEYS[SDLK_r] = false;
+        action = mainMenu;
+    }
+}
+
+void Game::render() {
+    SDL_RenderCopy(rend, tableTexture, nullptr, nullptr); //draw table
+    
+    for (int i = 0; i < balls.size(); i++)
+        balls[i]->draw();
+
+    if (!ballsMoving(balls)) {
+        //draw cue
+        float cueAngle = angleBetweenPoints(balls[0]->pos, {mouseX, mouseY});
+        float x = ((cueW + 2*ballRadius + shotForce*4) * cos(cueAngle) + cueW)/2;
+        float y = ((cueW + 2*ballRadius + shotForce*4) * sin(cueAngle) + cueH)/2;
+        SDL_Rect dstRect = {balls[0]->pos.x - x, balls[0]->pos.y - y, cueW, cueH};
+        SDL_RenderCopyEx(rend, cueTexture, nullptr, &dstRect, (cueAngle) * 180 / M_PI, nullptr, SDL_FLIP_HORIZONTAL);
+
+        //drawBallTrajectory(balls, mouseX, cueAngle);
+    }
+
+    SDL_RenderPresent(rend);
+    SDL_Delay(17);
+    SDL_RenderClear(rend);
 }
 
 void Game::finish(int winner) {
@@ -180,6 +176,7 @@ void Game::finish(int winner) {
 }
 
 void Game::quitGame() {
+    std::cout << "quitting!" << std::endl;
     for (int i = 0; i < balls.size(); i++) {
         delete(balls[i]);
     }

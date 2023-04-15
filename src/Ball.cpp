@@ -12,8 +12,8 @@ Ball::~Ball() {
 }
 
 void Ball::update() {
-    pos.x += vel.x;
-    pos.y += vel.y;
+    pos += vel;
+
     if (vel.x > 0)
         vel.x -= abs(frictionEffect * cos(movementAngle()));
     else
@@ -27,8 +27,6 @@ void Ball::update() {
     if (abs(vel.x) < minVelocity) vel.x = 0;
     if (abs(vel.y) < minVelocity) vel.y = 0;
 }
-
-float Ball::velocityNorm() { return sqrt(pow(vel.x, 2) + pow(vel.y, 2)); }
 
 float Ball::movementAngle() { return fmod(atan(vel.y/vel.x) + 2*M_PI, 2*M_PI); }
 

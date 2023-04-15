@@ -5,16 +5,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-const float pocketRadius = 40;
 const float ballRadius = 23;
 const float cueW = 3516/3;
 const float cueH = 61/3;
-
-//la posición central de la mesa es 0, 0
-//limite izquierdo = -h_table_radius
-//limite derecho = h_table_radius
-//limite superior = v_table_radius
-//limite inferior = -v_table_radius
 
 const int verticalScreenSize = 720;
 const int horizontalScreenSize = 1280;
@@ -27,30 +20,12 @@ const float tableRightBorder = 1198;
 const float tableUpBorder = 75;
 const float tableDownBorder = 643;
 
-const Pos tableEdges[25] = {{111, 53},
-							{134, 75},
-							{601, 75},
-							{610, 53},
-							{669, 53},
-							{679, 75},
-							{1160, 75},
-							{1169, 53},
-							{1220, 104},
-							{1198, 126},
-							{1198, 591},
-							{1220, 615},
-							{1169, 665},
-							{1160, 643},
-							{678, 643},
-							{669, 665},
-							{610, 665},
-							{601, 643},
-							{133, 643},
-							{110, 665},
-							{59, 614},
-							{81, 592},
-							{81, 127},
-							{59, 104},
+const Pos tableEdges[25] = {{111, 53}, {134, 75}, {601, 75}, {610, 53},
+							{669, 53}, {679, 75}, {1160, 75}, {1169, 53},
+							{1220, 104}, {1198, 126}, {1198, 591}, {1220, 615},
+							{1169, 665}, {1160, 643}, {678, 643}, {669, 665},
+							{610, 665}, {601, 643}, {133, 643}, {110, 665},
+							{59, 614}, {81, 592}, {81, 127}, {59, 104},
 							{111, 53}
 							};
 
@@ -79,42 +54,24 @@ const std::vector<Pos> startingPositions = {
 	{700 + ballRadius * 8, tableVerticalMiddle - 4 * ballRadius}, //ball 15
 };
 
-/*const std::vector<Pos> startingPositions = {
-	{120, tableVerticalMiddle}, //white_ball
-	{-100, -100}, //white_ball
-	{-1000, -1000}, //white_ball
-	{-10000, -10000}, //white_ball
-	{-100000, -1000000}, //white_ball
-	{-1, -1000000}, //white_ball
-	{-100000000, -1}, //white_ball
-	{-100, -1000000}, //white_ball
-	{-10000, -100}, //white_ball
-	{-1000000000, -100000000000}, //white_ball
-	{-100000000000, -10000000000}, //white_ball
-	{-10000000000000, -100000000000000}, //white_ball
-	{-100000000000, -100000000000000000}, //white_ball
-	{-1000000000000000000, -100000000000000000}, //white_ball
-	{-100000000000, -100000000000000000}, //white_ball
-	{700, tableVerticalMiddle}, //ball 1
-};*/
-
-const std::vector<Color> ballColors = {
-	{255, 255, 255, 255}, //white_ball
-	{255, 255, 0, 255}, //ball 1, yellow
-	{0, 0, 255, 255}, //ball 2
-	{255, 0, 0, 255}, //ball 3
-	{127, 0, 255, 255}, //ball 4
-	{255, 128, 0, 255}, //ball 5
-	{0, 102, 0, 255}, //ball 6
-	{153, 0, 0, 255}, //ball 7
-	{0, 0, 0, 255}, //ball 8
-	{255, 255, 0, 255}, //ball 9, yellow
-	{0, 0, 255, 255}, //ball 10
-	{255, 0, 0, 255}, //ball 11
-	{127, 0, 255, 255}, //ball 12
-	{255, 128, 0, 255}, //ball 13
-	{0, 102, 0, 255}, //ball 14
-	{153, 0, 0, 255}, //ball 15
+//placeholder
+const std::vector<Pos> inPositions = {
+	{-10000000, 0}, 
+	{-100, -100}, 
+	{-1000, -1000}, 
+	{-10000, -10000}, 
+	{-100000, -1000000}, 
+	{-1, -1000000}, 
+	{-100000000, -1}, 
+	{-100, -1000000}, 
+	{-10000, -100}, 
+	{-1000000000, -100000000000}, 
+	{-100000000000, -10000000000}, 
+	{-10000000000000, -100000000000000}, 
+	{-100000000000, -100000000000000000}, 
+	{-1000000000000000000, -100000000000000000},
+	{-100000000000, -100000000000000000},
+	{0, -10000000000},
 };
 
 //SDL Objects

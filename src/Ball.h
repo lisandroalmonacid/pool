@@ -21,7 +21,6 @@ public:
     SDL_Rect dstRect;
 
     void update();
-    float velocityNorm();
     float movementAngle();
     bool isMoving();
 
