@@ -2,56 +2,66 @@
 #define DEFINES_H
 
 #include "types.h"
+#include "Texture.h"
 #include <SDL.h>
 #include <SDL_image.h>
+#include <string>
 
-const float ballRadius = 23;
-const float cueW = 3516/3;
-const float cueH = 61/3;
+const float ballRadius = 75;
+const float cueW = 3516;
+const float cueH = 61;
+const float cueBallSpace = ballRadius / 4;
 
-const int verticalScreenSize = 720;
-const int horizontalScreenSize = 1280;
+const int screenH = 720;
+const int screenW = 1280;
+const SDL_Point screenOrigin = {0, 0};
+const SDL_Point screenEnd = {screenW, screenH};
+const SDL_Point screenMiddle = {screenW/2, screenH/2};
 
-const float verticalTableSize = verticalScreenSize - 4 * ballRadius;
-const float horizontalTableSize = horizontalScreenSize - 4 * ballRadius;
+const float tableW = 4551;
+const float tableH = 2570;
+const float tableScreenW = 1200;
+const float tableScreenH = tableH * tableScreenW/tableW;
+const float tableScreenOffsetX = (screenW - tableScreenW) / 2;
+const float tableScreenOffsetY = (screenH - tableScreenH) / 2;
 
-const float tableLeftBorder = 81;
-const float tableRightBorder = 1198;
-const float tableUpBorder = 75;
-const float tableDownBorder = 643;
+const float tableLeftBorder = 293;
+const float tableRightBorder = 4256;
+const float tableUpBorder = 293;
+const float tableDownBorder = 2277;
 
-const Pos tableEdges[25] = {{111, 53}, {134, 75}, {601, 75}, {610, 53},
-							{669, 53}, {679, 75}, {1160, 75}, {1169, 53},
-							{1220, 104}, {1198, 126}, {1198, 591}, {1220, 615},
-							{1169, 665}, {1160, 643}, {678, 643}, {669, 665},
-							{610, 665}, {601, 643}, {133, 643}, {110, 665},
-							{59, 614}, {81, 592}, {81, 127}, {59, 104},
-							{111, 53}
+const Pos tableEdges[25] = {{332, 212}, {417, 293}, {2106, 293}, {2140, 212},
+							{2357, 212}, {2392, 293}, {4100, 293}, {4184, 212},
+							{4338, 361}, {4256, 444}, {4256, 2122}, {4338, 2207},
+							{4184, 2357}, {4100, 2277}, {2392, 2277}, {2357, 2357},
+							{2144, 2357}, {2110, 2276}, {420, 2277}, {336, 2357},
+							{212, 2208}, {294, 2122}, {294, 443}, {211, 362}, 
+							{332, 212}
 							};
 
-const float tableHorizontalMiddle = horizontalTableSize/2 + tableLeftBorder;
-const float tableVerticalMiddle = verticalTableSize/2 + tableUpBorder;
+const float tableHorizontalMiddle = tableW/2 + tableLeftBorder;
+const float tableVerticalMiddle = tableH/2 + tableUpBorder;
 
 const float frictionEffect = 0.05;
 const float minVelocity = 0.1; // has to be greater than the frictionEffect.
 
 const std::vector<Pos> startingPositions = {
-	{120, tableVerticalMiddle}, //white_ball
-	{700, tableVerticalMiddle}, //ball 1
-	{700 + ballRadius * 2, tableVerticalMiddle + ballRadius}, //ball 2
-	{700 + ballRadius * 2, tableVerticalMiddle - ballRadius}, //ball 3
-	{700 + ballRadius * 4, tableVerticalMiddle + 2 * ballRadius}, //ball 4
-	{700 + ballRadius * 4, tableVerticalMiddle}, //ball 5
-	{700 + ballRadius * 4, tableVerticalMiddle - 2 * ballRadius}, //ball 6
-	{700 + ballRadius * 6, tableVerticalMiddle + ballRadius}, //ball 7
-	{700 + ballRadius * 6, tableVerticalMiddle + 3 * ballRadius}, //ball 8
-	{700 + ballRadius * 6, tableVerticalMiddle - ballRadius}, //ball 9
-	{700 + ballRadius * 6, tableVerticalMiddle - 3 * ballRadius}, //ball 10
-	{700 + ballRadius * 8, tableVerticalMiddle}, //ball 11
-	{700 + ballRadius * 8, tableVerticalMiddle + 2 * ballRadius}, //ball 12
-	{700 + ballRadius * 8, tableVerticalMiddle + 4 * ballRadius}, //ball 13
-	{700 + ballRadius * 8, tableVerticalMiddle - 2 * ballRadius}, //ball 14
-	{700 + ballRadius * 8, tableVerticalMiddle - 4 * ballRadius}, //ball 15
+	{500, tableH/2}, //white_ball
+	{tableW/2, tableH/2}, //ball 1
+	{tableW/2 + ballRadius * 2, tableH/2 + ballRadius}, //ball 2
+	{tableW/2 + ballRadius * 2, tableH/2 - ballRadius}, //ball 3
+	{tableW/2 + ballRadius * 4, tableH/2 + 2 * ballRadius}, //ball 4
+	{tableW/2 + ballRadius * 4, tableH/2}, //ball 5
+	{tableW/2 + ballRadius * 4, tableH/2 - 2 * ballRadius}, //ball 6
+	{tableW/2 + ballRadius * 6, tableH/2 + ballRadius}, //ball 7
+	{tableW/2 + ballRadius * 6, tableH/2 + 3 * ballRadius}, //ball 8
+	{tableW/2 + ballRadius * 6, tableH/2 - ballRadius}, //ball 9
+	{tableW/2 + ballRadius * 6, tableH/2 - 3 * ballRadius}, //ball 10
+	{tableW/2 + ballRadius * 8, tableH/2}, //ball 11
+	{tableW/2 + ballRadius * 8, tableH/2 + 2 * ballRadius}, //ball 12
+	{tableW/2 + ballRadius * 8, tableH/2 + 4 * ballRadius}, //ball 13
+	{tableW/2 + ballRadius * 8, tableH/2 - 2 * ballRadius}, //ball 14
+	{tableW/2 + ballRadius * 8, tableH/2 - 4 * ballRadius}, //ball 15
 };
 
 //placeholder
@@ -70,19 +80,40 @@ const std::vector<Pos> inPositions = {
 	{-10000000000000, -100000000000000}, 
 	{-100000000000, -100000000000000000}, 
 	{-1000000000000000000, -100000000000000000},
-	{-100000000000, -100000000000000000},
+	{-100000000000, -100000000000000000000},
 	{0, -10000000000},
 };
+
+const int msgAmount = 12;
+const std::vector<std::string> messages = {
+	"POOL",
+	"PLAY",
+	"PLAYER 1's TURN",
+	"PLAYER 2's TURN",
+	"PLAYER 1 HAS THE BALL IN HAND",
+	"PLAYER 2 HAS THE BALL IN HAND",
+	"PLAYER 1 IS SOLIDS",
+	"PLAYER 2 IS SOLIDS",
+	"PLAYER 1 IS STRIPES",
+	"PLAYER 2 IS STRIPES",
+	"PLAYER 1 WINS",
+	"PLAYER 2 WINS"
+};
+
+const SDL_Color colorWhite = {255, 255, 255, 255};
 
 //SDL Objects
 extern SDL_Event event;
 extern SDL_Window* win;
 extern SDL_Renderer* rend;
 
-extern SDL_Texture* tableTexture;
-extern SDL_Texture* mainMenuTexture;
-extern SDL_Texture* cueTexture;
-extern SDL_Texture* triangleTexture;
-extern SDL_Texture* trajectoryBallTexture;
-
+extern Texture* tableTexture;
+extern Texture* mainMenuTexture;
+extern Texture* cueTexture;
+extern Texture* triangleTexture;
+extern Texture* trajectoryBallTexture;
+extern Texture* ballTextures[16];
+extern Texture* messageTextures[msgAmount];
+extern Texture* titleTexture;
+extern Texture* subtitleTexture;
 #endif

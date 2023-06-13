@@ -44,7 +44,7 @@ void drawRect(Pos startPos, int width, int height, Color color) {
 void drawMainMenuScreen() {
     //drawBMP(rend, {0, vertical_screen_size}, "../img/mainMenu.bmp");
     //SDL_BlitSurface(mainMenuSurface, nullptr, screenSurface, nullptr);
-    //drawRect({0, 0}, horizontalScreenSize, verticalScreenSize, {255, 255, 255, 255});
+    //drawRect({0, 0}, screenW, verticalScreenSize, {255, 255, 255, 255});
     //SDL_UpdateWindowSurface(win);
 }
 
@@ -71,7 +71,7 @@ void drawWallCollision(Ball* b, Pos l1, Pos l2) {
 }
 
 void drawBallCollision(Ball* b1, Ball* b2) {
-    SDL_RenderCopy(rend, tableTexture, nullptr, nullptr); //draw table
+    tableTexture->draw({0, 0});
     b1->draw();
     b2->draw();
     SDL_RenderDrawLine(rend, b1->pos.x, b1->pos.y, b2->pos.x, b2->pos.y);
@@ -86,7 +86,7 @@ void drawBallCollision(Ball* b1, Ball* b2) {
 
 void drawBallTrajectory(std::vector<Ball*> balls, float mouseX, float cueAngle) {
     //draw projected ball trajectory
-    int maxLineLen = pointsNorm({0, 0}, {horizontalScreenSize, verticalScreenSize});
+    int maxLineLen = pointsNorm({0, 0}, {screenW, screenH});
     float lineAngle = balls[0]->pos.x > mouseX ? cueAngle : cueAngle + M_PI;
     Pos lineEnd = {balls[0]->pos.x + maxLineLen*cos(cueAngle), balls[0]->pos.y + maxLineLen*sin(cueAngle)};
     
@@ -126,4 +126,12 @@ void drawBallTrajectory(std::vector<Ball*> balls, float mouseX, float cueAngle) 
         drawCircle(center, ballRadius, {0, 0, 0, 255});
         SDL_RenderDrawLine(rend, balls[0]->pos.x, balls[0]->pos.y, center.x, center.y);
     }
+}
+
+SDL_Texture* createTextTexture(TTF_Font* font, char* text, SDL_Color color) {
+    SDL_Surface* tmp = TTF_RenderText_Solid(font, text, color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(rend, tmp);
+    SDL_FreeSurface(tmp);
+    tmp = nullptr;
+    return texture;
 }

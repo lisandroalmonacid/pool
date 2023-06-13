@@ -65,7 +65,13 @@ struct Vector2d {
 typedef Vector2d Pos;
 typedef Vector2d Vel;
 
-enum Action {mainMenu, game, quit};
+enum Action {MainMenu, game, Quit};
+enum BallClass {cueBall, Solid, Striped, Black, None};
+
+struct Player {
+  int _id;
+  BallClass _ballClass;
+};
 
 struct Color {
   uint8_t r;
@@ -75,5 +81,6 @@ struct Color {
 };
 
 typedef Color Pixel;
+
 
 #endif

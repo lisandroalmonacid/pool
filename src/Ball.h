@@ -17,14 +17,17 @@ public:
 
     bool isIn;
     int number;
-    SDL_Texture* texture;
-    SDL_Rect dstRect;
+    bool isCollidingWithWall;
+    BallClass _class;
+    Texture* _texture;
 
     void update();
     float movementAngle();
     bool isMoving();
 
     void draw();
+    SDL_Point drawPos();
+    SDL_Point screenPos();
 };
 
 #endif

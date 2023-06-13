@@ -37,6 +37,41 @@ bool isBallCollidingWithWall (Ball* b, Pos p1, Pos p2) {
     return (pointsNorm(b->pos, closestPoint) <= ballRadius);
 }
 
+std::pair<int, float> closestWall(Ball* b) {
+    float distanceToWalls[25];
+
+    for (int i = 1; i < 25; i++)
+        distanceToWalls[i] = distanceToWall(b, tableEdges[i-1], tableEdges[i]);
+
+    int minDist = 1;
+    for (int i = 1; i < 25; i++) {
+        if(distanceToWalls[i] < distanceToWalls[minDist]) {
+            minDist = i;
+        }
+    } 
+    return {minDist, distanceToWalls[minDist]};
+}
+
+float distanceToWall(Ball* b, Pos p1, Pos p2) {
+    //obtener dirección de la recta que pasa por p1, p2
+    Vector2d wallDir = p2 - p1;
+
+    //obtener dirección ortogonal a la recta
+    Vector2d ortDir;
+    if (wallDir.y == 0) ortDir = {0, 1};
+    else if (wallDir.x == 0) ortDir = {1, 0};
+    else ortDir = {1, -wallDir.x/wallDir.y};
+
+    Pos iPos = intersection(wallDir, p1, ortDir, b->pos);
+    Pos closestPoint;
+    if (isPointInLine(iPos, p1, p2)) {
+        closestPoint = iPos;
+    } else {
+        closestPoint = pointsNorm(b->pos, p1) < pointsNorm(b->pos, p2) ? p1 : p2;
+    }
+    return pointsNorm(b->pos, closestPoint);
+}
+
 bool isPointInLine(Pos p, Pos l1, Pos l2) {
     bool betweenX = ((l1.x <= p.x) && (p.x <= l2.x)) || ((l1.x >= p.x) && (p.x >= l2.x));
     bool betweenY = ((l1.y <= p.y) && (p.y <= l2.y)) || ((l1.y >= p.y) && (p.y >= l2.y));
@@ -69,11 +104,15 @@ void ballCollision(Ball* b1, Ball* b2) {
     b2->vel -= (posDiff) * ( (velDiff % posDiff) / posDiff.squareNorm() );
 
     //drawBallCollision(b1, b2);
-    
     setBallsApart(b1, b2);
 }
 
 float angleBetweenPoints(Pos p1, Pos p2) {
+    // edge cases: diff.x = 0.
+    if (p1 == p2) return 0;
+    if (p1.x == p2.x) return (p2.y > p1.y) ? M_PI/2 : M_PI*3/2;
+    
+
     Pos diff = p1 - p2;
     float angle = atanf(diff.y/diff.x);
     
@@ -102,11 +141,9 @@ void setBallsApart(Ball* b1, Ball* b2) {
     }
 }
 
-bool ballsMoving(std::vector<Ball*> balls) {
-    bool res = false;
-
-    for (int i = 0; !res && i < balls.size(); i++)
-        res = balls[i]->isMoving();
-
-    return res;
+bool inBounds(Ball* b) {
+    return b->pos.y > tableUpBorder + ballRadius &&
+           b->pos.y < tableDownBorder - ballRadius &&
+           b->pos.x > tableLeftBorder + ballRadius && 
+           b->pos.x < tableRightBorder - ballRadius;
 }

@@ -5,7 +5,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <vector>
+#include <queue>
 #include "Ball.h"
+#include "TextBox.h"
 
 class Game {
 public:
@@ -13,6 +15,17 @@ public:
   void mainMenuScreen();
   void game_screen();
   void gameLoop();
+
+  void startTurn();
+  void switchPlayer();
+  void restoreCueBall();
+  bool anyBallsIn(BallClass bClass);
+  void displayTurnMessage();
+  void displayClassMessages();
+
+  void aimLoop();
+  void executeShot();
+
   void start();
   void finish(int winner);
   void quitGame();
@@ -20,6 +33,8 @@ public:
   void updateBalls();
   void manageBallCollisions();
   void manageBorderCollisions(Ball* b);
+  bool ballsMoving();
+  bool areAllBallsIn();
   void processEventQueue();
   void render();
 
@@ -28,9 +43,27 @@ private:
   int mouseX;
   int mouseY;
   bool mouseClick;
+
   int shotForce;
+
   Action action;
+  
   std::vector<Ball*> balls;
+  Ball* cueBall;
+  Ball* eightBall;
+
+  Player players[2];
+
+  bool currPlayer; //0 = player 1; 1 = player 2.
+  bool ballInHand;
+
+  bool ballInHandMode;
+  bool aimMode;
+
+  Ball* firstTouchedBall;
+  Ball* firstPocketedBall;
+
+  std::queue<TextBox*> messageQueue;
 };
 
 #endif

@@ -1,14 +1,24 @@
 #include "Ball.h"
 #include <iostream>
 
-Ball::Ball(Pos startPos, int nbr) : pos(startPos), vel({0, 0}), isIn(false), number(nbr) {
-    std::string filepath = "img/ball_" + std::to_string(number) + ".png";
-    texture = IMG_LoadTexture(rend, filepath.c_str());
-    dstRect = { (int)(pos.x - ballRadius), (int)(pos.y - ballRadius), (int)(2*ballRadius),  (int)(2*ballRadius)};
+Ball::Ball(Pos startPos, int nbr) : pos(startPos), vel({0, 0}), isIn(false), number(nbr), isCollidingWithWall(false) {
+    _texture = ballTextures[nbr];
+    _texture->_w = 2*ballRadius*tableScreenW/tableW;
+    _texture->_h = 2*ballRadius*tableScreenH/tableH;
+
+    if (nbr == 0) {
+        _class = cueBall;
+    } else if (nbr < 8) {
+        _class = Solid;
+    } else if (nbr == 8) {
+        _class = Black;
+    } else {
+        _class = Striped;
+    }
 }
 
 Ball::~Ball() {
-    SDL_DestroyTexture(texture);
+    _texture = nullptr;
 }
 
 void Ball::update() {
@@ -33,6 +43,22 @@ float Ball::movementAngle() { return fmod(atan(vel.y/vel.x) + 2*M_PI, 2*M_PI); }
 bool Ball::isMoving() { return vel.x != 0 || vel.y != 0; }
 
 void Ball::draw() {
-    dstRect = { (int)(pos.x - ballRadius), (int)(pos.y - ballRadius), (int)(2*ballRadius),  (int)(2*ballRadius)};
-    SDL_RenderCopy(rend, this->texture, nullptr, &dstRect);
+    _texture->draw(drawPos());
+}
+
+SDL_Point Ball::drawPos() {
+    Pos drawPos = pos - ballRadius;
+    Pos tableScreenPos = {tableScreenOffsetX, tableScreenOffsetY};
+    Vector2d tableDim = {tableW, tableH};
+    Vector2d tableScreenDim = {tableScreenW, tableScreenH};
+    Pos res = (drawPos * tableScreenDim / tableDim) + tableScreenPos;
+    return {res.x, res.y};
+}
+
+SDL_Point Ball::screenPos() {
+    Pos tableScreenPos = {tableScreenOffsetX, tableScreenOffsetY};
+    Vector2d tableDim = {tableW, tableH};
+    Vector2d tableScreenDim = {tableScreenW, tableScreenH};
+    Pos res = (pos * tableScreenDim / tableDim) + tableScreenPos;
+    return {res.x, res.y};   
 }
