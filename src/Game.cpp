@@ -86,11 +86,11 @@ void Game::mainMenuScreen() {
 }
 
 void Game::gameLoop() {
+    displayTurnMessages(); //first turn
     while(action == game) {
-        startTurn();
         aimLoop();
         executeShot();
-        if (areAllBallsIn()) action = Quit;
+        nextTurn();
     }
 }
 
@@ -104,17 +104,22 @@ void Game::restoreCueBall() {
     cueBall->vel = {0, 0};
 }
 
-void Game::startTurn() {
+void Game::nextTurn() {
     ballInHand = false;
 
     if (firstTouchedBall == nullptr) {
+        if (cueBall->isIn) restoreCueBall();
         switchPlayer();
-        displayTurnMessage();
+        ballInHand = true;
+        displayTurnMessages();
         return;
     }
 
     if (eightBall->isIn) {
-        finish(!currPlayer);
+        if (areAllBallsIn())
+            finish(currPlayer);
+        else
+            finish(!currPlayer);
         return;
     }
 
@@ -122,7 +127,7 @@ void Game::startTurn() {
         restoreCueBall();
         switchPlayer();
         ballInHand = true;
-        displayTurnMessage();
+        displayTurnMessages();
         firstTouchedBall = nullptr;
         firstPocketedBall = nullptr;
         return;   
@@ -131,32 +136,31 @@ void Game::startTurn() {
     if (players[currPlayer]._ballClass == None && firstPocketedBall != nullptr) {
         players[currPlayer]._ballClass = firstPocketedBall->_class;
         players[!currPlayer]._ballClass = firstPocketedBall->_class == Solid ? Striped : Solid;
-        displayTurnMessage();
+        displayClassMessages();
+        displayTurnMessages();
         firstTouchedBall = nullptr;
         firstPocketedBall = nullptr;
-        //class messages
-        displayClassMessages();
         return;
     }
 
     if (players[currPlayer]._ballClass != firstTouchedBall->_class) {
         switchPlayer();
         ballInHand = true;
-        displayTurnMessage();
+        displayTurnMessages();
         firstTouchedBall = nullptr;
         firstPocketedBall = nullptr;
         return;
     }
 
-    if (!anyBallsIn(players[currPlayer]._ballClass)) {
+    if (firstPocketedBall == nullptr || firstPocketedBall->_class != players[currPlayer]._ballClass) {
         switchPlayer();
-        displayTurnMessage();
+        displayTurnMessages();
         firstTouchedBall = nullptr;
         firstPocketedBall = nullptr;
         return;
     }
-    if (anyBallsIn(players[currPlayer]._ballClass)) {
-        displayTurnMessage();
+    if (firstPocketedBall->_class == players[currPlayer]._ballClass) {
+        displayTurnMessages();
         firstTouchedBall = nullptr;
         firstPocketedBall = nullptr;
         return;
@@ -176,7 +180,7 @@ void Game::displayClassMessages() {
     messageQueue.push(p2Msg);
 }
 
-void Game::displayTurnMessage() {
+void Game::displayTurnMessages() {
     TextBox* turnMsg = nullptr;
     TextBox* ballInHandMsg = nullptr;
 
@@ -198,7 +202,7 @@ bool Game::anyBallsIn(BallClass bClass) {
 
     bool res;
     for (int i = l; i < h; i++)
-        res == res || balls[i]->isIn;
+        res = res || balls[i]->isIn;
     
     return res;
 }
@@ -363,7 +367,7 @@ void Game::render() {
     }
 
     if (messageQueue.size() > 0) {
-        messageQueue.front()->draw(mouseX, mouseY);
+        messageQueue.front()->draw(-1, -1);
         messageQueue.front()->ttl--;
         if (messageQueue.front()->ttl == 0) messageQueue.pop();
     }
@@ -373,7 +377,14 @@ void Game::render() {
     SDL_RenderClear(rend);
 }
 
-void Game::finish(int winner) {
+void Game::finish(bool winner) {
+    TextBox* winMsg = winner ? new TextBox(10, screenMiddle, false, true) : new TextBox(11, screenMiddle, false, true);
+    tableTexture->draw({(int)tableScreenOffsetX, (int)tableScreenOffsetY});
+    for (int i = 0; i < balls.size(); i++)
+        balls[i]->draw();
+    winMsg->draw(-1, -1);
+    SDL_RenderPresent(rend);
+    SDL_Delay(5000);
 	quitGame();
 }
 

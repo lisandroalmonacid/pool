@@ -16,18 +16,18 @@ public:
   void game_screen();
   void gameLoop();
 
-  void startTurn();
+  void nextTurn();
   void switchPlayer();
   void restoreCueBall();
   bool anyBallsIn(BallClass bClass);
-  void displayTurnMessage();
+  void displayTurnMessages();
   void displayClassMessages();
 
   void aimLoop();
   void executeShot();
 
   void start();
-  void finish(int winner);
+  void finish(bool winner);
   void quitGame();
 
   void updateBalls();
