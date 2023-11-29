@@ -17,10 +17,10 @@ TextBox::~TextBox() {
     _texture = nullptr;
 }
 
-void TextBox::draw(int mouseX, int mouseY) {
+void TextBox::draw() {
     SDL_Rect dstRect = {_screenPos.x, _screenPos.y, _texture->_w, _texture->_h};
 
-    if (isHovered(mouseX, mouseY)) {
+    if (isHovered()) {
         SDL_SetRenderDrawColor(rend, 255, 255, 0, 100);
         SDL_RenderFillRect(rend, &dstRect);
     }
@@ -32,7 +32,7 @@ void TextBox::draw(int mouseX, int mouseY) {
     _texture->draw(_screenPos);
 }
 
-bool TextBox::isHovered(int mouseX, int mouseY) {
+bool TextBox::isHovered() {
     return (_screenPos.x <= mouseX) && (_screenPos.x + _texture->_w >= mouseX) &&
             (_screenPos.y <= mouseY) && (_screenPos.y + _texture->_h >= mouseY);
 }

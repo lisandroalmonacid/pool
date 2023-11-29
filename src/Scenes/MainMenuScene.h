@@ -6,13 +6,13 @@
 #define POOL_MAINMENUSCENE_H
 
 #include "Scene.h"
-#include "../TextBox.h"
-#include "../defines.h"
+#include "../Objects/TextBox.h"
+#include "../globals.h"
 
-class MainMenuScene : Scene {
-    bool init();
-    bool loop();
-    bool exit();
+class MainMenuScene : public Scene {
+    bool init() override;
+    Action loop() override;
+    bool exit() override;
 
     TextBox* title;
     TextBox* subtitle;

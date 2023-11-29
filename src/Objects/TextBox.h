@@ -1,18 +1,18 @@
 #ifndef TEXTBOX_H
 #define TEXTBOX_H
 
-#include "Texture.h"
+#include "../Texture.h"
 #include <SDL.h>
 #include <SDL_ttf.h>
-#include "types.h"
-#include "defines.h"
+#include "../types.h"
+#include "../globals.h"
 
-class TextBox {
+class TextBox : public GameObject {
 public:
   TextBox(int messageNumber, SDL_Point screenPos, bool bordered, bool centered);
   ~TextBox();
-  void draw(int mouseX, int mouseY);
-  bool isHovered(int mouseX, int mouseY);
+  void draw() override;
+  bool isHovered();
   int ttl;
 
 private:  

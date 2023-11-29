@@ -5,8 +5,8 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "types.h"
-#include "defines.h"
-#include "Ball.h"
+#include "globals.h"
+#include "Objects/Ball.h"
 
 
 void drawCircle(Pos center, double radius, Color Color);

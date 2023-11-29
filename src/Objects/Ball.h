@@ -1,16 +1,18 @@
 #ifndef BALL_H
 #define BALL_H
 
-#include "types.h"
-#include "defines.h"
+#include "../types.h"
+#include "../globals.h"
+#include "GameObject.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
 
-class Ball {
+class Ball : public GameObject {
 public:
     Ball(Pos startPos, int nbr);
     ~Ball();
+    void draw() override;
 
     Pos pos;
     Vel vel;
@@ -25,7 +27,6 @@ public:
     double movementAngle();
     bool isMoving();
 
-    void draw();
     SDL_Point drawPos();
     SDL_Point screenPos();
 };

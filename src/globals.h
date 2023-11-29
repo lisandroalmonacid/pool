@@ -102,6 +102,8 @@ const std::vector<std::string> messages = {
 
 const SDL_Color colorWhite = {255, 255, 255, 255};
 
+extern GameState gameState;
+
 //SDL Objects
 extern SDL_Event event;
 extern SDL_Window* win;

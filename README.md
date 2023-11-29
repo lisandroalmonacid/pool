@@ -1,6 +1,6 @@
 ## Pool
 
-Simple 8-ball pool game developed in C++, using the SDL2 library for rendering.
+Simple 8-ball pool Pool developed in C++, using the SDL2 library for rendering.
 
 ## Play
 In a Windows PC, download and open `Pool.exe`.

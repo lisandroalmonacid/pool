@@ -8,7 +8,8 @@ bool MainMenuScene::init() {
     title = new TextBox(0, {screenW/2, screenH/2}, false, true);
     subtitle = new TextBox(1, {screenW/2, screenH/2 + 200}, true, true);
 }
-bool MainMenuScene::loop() {
+
+Action MainMenuScene::loop() {
     title->draw(0, 0);
     subtitle->draw(mouseX, mouseY);
     SDL_RenderPresent(rend);
@@ -17,11 +18,11 @@ bool MainMenuScene::loop() {
 
     if (mouseClick) {
         if (subtitle->isHovered(mouseX, mouseY)) {
-            return false;
+            return Pool;
         }
         mouseClick = false;
     }
-    return true;
+    return MainMenu;
 }
 
 bool MainMenuScene::exit() {

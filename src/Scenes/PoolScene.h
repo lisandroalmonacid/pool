@@ -8,10 +8,10 @@
 #include "../physics.h"
 #include <vector>
 #include <queue>
-#include "../Ball.h"
-#include "../TextBox.h"
+#include "../Objects/Ball.h"
+#include "../Objects/TextBox.h"
 
-class PoolScene {
+class PoolScene : public Scene {
     int shotForce;
 
     std::vector<Ball*> balls;
@@ -30,7 +30,7 @@ class PoolScene {
     Ball* firstPocketedBall;
 
     bool init();
-    bool loop();
+    Action loop();
     bool exit();
 
     void nextTurn();
@@ -48,6 +48,8 @@ class PoolScene {
     void manageBorderCollisions(Ball* b);
     bool ballsMoving();
     bool areAllBallsIn();
+
+    void finish(bool winner);
 };
 
 

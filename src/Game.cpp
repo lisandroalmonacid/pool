@@ -6,391 +6,92 @@
 Game::Game() {
     //Init KEYS
     for(int i = 0; i < 322; i++) {
-        KEYS[i] = false;
+        gameState.KEYS[i] = false;
     }
-    mouseClick = false;
-    shotForce = 0;
-    action = MainMenu;
+    gameState.mouseClick = false;
+    gameState.action = MainMenu;
 
-    for (int i = 0; i < 16; i++) {
-	    Ball* b = new Ball(startingPositions[i], i);
-        balls.push_back(b);
-    }
-    cueBall = balls[0];
-    eightBall = balls[8];
-
-    // init players with correct ID and no ball class.
-    players[0] = {0, None};
-    players[1] = {1, None};
-
-    curPlayer = 0; //0 = player 1; 1 = player 2.
-    ballInHand = false;
-
-    ballInHandMode = false;
-    aimMode = false;
-
-    firstTouchedBall = nullptr;
+    mainMenuScene = new MainMenuScene();
+    poolScene = new PoolScene();
+    currentScene = mainMenuScene;
 }
 
 void Game::start() {
-    std::cout << "Starting game" << std::endl;
-    while (action != Quit) {
-        switch (action) {
+    currentScene = mainMenuScene;
+    currentScene->init();
+
+    int t = 0;
+
+    while (gameState.action != Quit) {
+        processEventQueue();
+
+        t++;
+        if (t == 100) {
+            render();
+            t = 0;
+        }
+
+        gameState.action = currentScene->loop();
+
+        Scene* nextScene;
+        switch (gameState.action) {
         case MainMenu:
-            mainMenuScreen();
+            nextScene = mainMenuScene;
             break;
-        case game:
-            gameLoop();
+        case Pool:
+            nextScene = poolScene;
             break;
         default:
             break;
         }
+        if (currentScene != nextScene)
+            switchScenes(nextScene);
     }
     quitGame();
-    return;
 }
-
-void Game::mainMenuScreen() {
-    std::cout << "Main menu!" << std::endl;
-    TextBox* title = new TextBox(0, {screenW/2, screenH/2}, false, true);
-    TextBox* subtitle = new TextBox(1, {screenW/2, screenH/2 + 200}, true, true);
-
-    while(action == MainMenu) {
-        processEventQueue();
-
-        if (KEYS[SDLK_SPACE]) {
-            KEYS[SDLK_SPACE] = false;
-            action = game;
-        }
-        if (KEYS[SDLK_ESCAPE]) {
-            KEYS[SDLK_ESCAPE] = false;
-            action = Quit;
-        }
-
-        title->draw(0, 0);
-        subtitle->draw(mouseX, mouseY);
-        SDL_RenderPresent(rend);
-        SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
-        SDL_RenderClear(rend);
-
-        if (mouseClick) {
-            if (subtitle->isHovered(mouseX, mouseY)) {
-                action = game;
-            }
-            mouseClick = false;
-        }
-    }
-
-    std::cout << "Leaving main menu." << std::endl;
-    return;
-}
-
-void Game::gameLoop() {
-    displayTurnMessages(); //first turn
-    while(action == game) {
-        aimLoop();
-        executeShot();
-        nextTurn();
-    }
-}
-
-void Game::switchPlayer() {
-    curPlayer = !curPlayer;
-}
-
-void Game::restoreCueBall() {
-    cueBall->isIn = false;
-    cueBall->pos = startingPositions[0];
-    cueBall->vel = {0, 0};
-}
-
-void Game::nextTurn() {
-    ballInHand = false;
-
-    if (firstTouchedBall == nullptr) {
-        if (cueBall->isIn) restoreCueBall();
-        switchPlayer();
-        ballInHand = true;
-        displayTurnMessages();
-        return;
-    }
-
-    if (eightBall->isIn) {
-        if (areAllBallsIn())
-            finish(curPlayer);
-        else
-            finish(!curPlayer);
-        return;
-    }
-
-    if (cueBall->isIn) {
-        restoreCueBall();
-        switchPlayer();
-        ballInHand = true;
-        displayTurnMessages();
-        firstTouchedBall = nullptr;
-        firstPocketedBall = nullptr;
-        return;   
-    }
-
-    if (players[curPlayer]._ballClass == None && firstPocketedBall != nullptr) {
-        players[curPlayer]._ballClass = firstPocketedBall->_class;
-        players[!curPlayer]._ballClass = firstPocketedBall->_class == Solid ? Striped : Solid;
-        displayClassMessages();
-        displayTurnMessages();
-        firstTouchedBall = nullptr;
-        firstPocketedBall = nullptr;
-        return;
-    }
-
-    if (players[curPlayer]._ballClass != firstTouchedBall->_class) {
-        switchPlayer();
-        ballInHand = true;
-        displayTurnMessages();
-        firstTouchedBall = nullptr;
-        firstPocketedBall = nullptr;
-        return;
-    }
-
-    if (firstPocketedBall == nullptr || firstPocketedBall->_class != players[curPlayer]._ballClass) {
-        switchPlayer();
-        displayTurnMessages();
-        firstTouchedBall = nullptr;
-        firstPocketedBall = nullptr;
-        return;
-    }
-    if (firstPocketedBall->_class == players[curPlayer]._ballClass) {
-        displayTurnMessages();
-        firstTouchedBall = nullptr;
-        firstPocketedBall = nullptr;
-        return;
-    }
-
-    return;
-}
-
-void Game::displayClassMessages() {
-    int p1MsgNbr = players[0]._ballClass == Solid ? 6 : 8;
-    int p2MsgNbr = players[1]._ballClass == Solid ? 7 : 9;
-
-    TextBox* p1Msg = new TextBox(p1MsgNbr, screenMiddle, false, true);
-    TextBox* p2Msg = new TextBox(p2MsgNbr, screenMiddle, false, true);
-
-    messageQueue.push(p1Msg);
-    messageQueue.push(p2Msg);
-}
-
-void Game::displayTurnMessages() {
-    TextBox* turnMsg = nullptr;
-    TextBox* ballInHandMsg = nullptr;
-
-    if (curPlayer == 0) {
-        turnMsg = new TextBox(2, screenMiddle, false, true);
-        if (ballInHand) ballInHandMsg = new TextBox(4, screenMiddle, false, true);
-    } else {
-        turnMsg = new TextBox(3, screenMiddle, false, true);
-        if (ballInHand) ballInHandMsg = new TextBox(5, screenMiddle, false, true);
-    }
-
-    messageQueue.push(turnMsg);
-    if (ballInHand) messageQueue.push(ballInHandMsg);
-}
-
-bool Game::anyBallsIn(BallClass bClass) {
-    int l = bClass == Solid ? 1 : 9;
-    int h = bClass == Solid ? 7 : 15;
-
-    bool res;
-    for (int i = l; i < h; i++)
-        res = res || balls[i]->isIn;
-    
-    return res;
-}
-
-void Game::aimLoop() {
-    while (!ballsMoving() && action == game) {
-        processEventQueue();
-        if (mouseClick) {
-            Pos mousePos = {(mouseX - tableScreenOffsetX)/tableScreenW*tableW, (mouseY - tableScreenOffsetY)/tableScreenH*tableH};
-            if ( ((mousePos - cueBall->pos).norm() < ballRadius || ballInHandMode) && !aimMode && ballInHand) {
-                ballInHandMode = true;
-                cueBall->pos = mousePos;
-                shotForce = 0;
-            } else if (shotForce < 25 && !ballInHandMode) {
-                aimMode = true;
-                shotForce = shotForce + 2;
-                double cueAngle = angleBetweenPoints({cueBall->screenPos().x, cueBall->screenPos().y}, {mouseX, mouseY});
-            }
-        } else {
-            ballInHandMode = false;
-            aimMode = false;
-
-            double cueAngle = angleBetweenPoints({cueBall->screenPos().x, cueBall->screenPos().y}, {mouseX, mouseY});
-            cueBall->vel.x = shotForce * cos(cueAngle);
-            cueBall->vel.y = shotForce * sin(cueAngle);
-            shotForce = 0;
-        }
-        render();
-    }
-}
-
-void Game::executeShot() {
-    while (ballsMoving() && action == game) {
-        processEventQueue();
-        updateBalls();
-        manageBallCollisions();
-        render();
-    }
-}
-
-void Game::updateBalls() {
-    for (int i = 0; i < balls.size(); i++) {
-        if (balls[i]->isMoving()) {
-            balls[i]->update();
-            manageBorderCollisions(balls[i]);
-            if (balls[i]->isIn && firstPocketedBall == nullptr)
-                firstPocketedBall = balls[i];
-        }
-    }
-}
-
-void Game::manageBallCollisions() {
-    for (int i = 0; i < balls.size(); i++) {
-        for (int j = i + 1; j < balls.size(); j++){
-            if (ballsAreColliding(balls[i], balls[j])) {
-                ballCollision(balls[i], balls[j]);
-                if (i == 0 && firstTouchedBall == nullptr) {
-                    firstTouchedBall = balls[j];
-                }
-            }
-        }
-    }
-}
-
-void Game::manageBorderCollisions(Ball* b) {
-    if (inBounds(b)) {
-        b->isCollidingWithWall = false;
-        return;
-    }
-    //get closest wall to b, and its distance 
-    std::pair<int, double> cWall = closestWall(b);
-
-    if (cWall.second < ballRadius) {
-        if (cWall.first % 4 == 0) {
-            b->isIn = true;
-            b->pos = inPositions[b->number];
-            b->vel = {0, 0};
-        } else if (!(b->isCollidingWithWall)) {
-            b->isCollidingWithWall = true;
-            borderCollision(b, tableEdges[cWall.first-1], tableEdges[cWall.first]);
-        }
-    } else {
-        b->isCollidingWithWall = false;
-    }
-}
-
-bool Game::ballsMoving() {
-    bool res = false;
-
-    for (int i = 0; !res && i < balls.size(); i++)
-        res = balls[i]->isMoving();
-
-    return res;
-}
-
-bool Game::areAllBallsIn() {
-    bool res = true;
-
-    for (int i = 0; res && i < balls.size(); i++)
-        res = balls[i]->isIn;
-
-    return res;    
-}
-
 void Game::processEventQueue() {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_KEYDOWN:
-            KEYS[event.key.keysym.sym] = true;
+            gameState.KEYS[event.key.keysym.sym] = true;
             break;
         case SDL_MOUSEBUTTONDOWN:
-            mouseClick = true;
+            gameState.mouseClick = true;
             break;
         case SDL_MOUSEBUTTONUP:
-            mouseClick = false;
+            gameState.mouseClick = false;
             break;
         case SDL_QUIT:
-            action = Quit;
+            gameState.action = Quit;
             break;
         default:
             break;
         }
     }
 
-    SDL_GetMouseState(&mouseX, &mouseY);
+    SDL_GetMouseState(&gameState.mouseX, &gameState.mouseY);
 
-    if (KEYS[SDLK_ESCAPE]) {
-        KEYS[SDLK_ESCAPE] = false;
-        action = Quit;
+    if (gameState.KEYS[SDLK_ESCAPE]) {
+        gameState.KEYS[SDLK_ESCAPE] = false;
+        gameState.action = Quit;
     }
-    if (KEYS[SDLK_r]) {
-        KEYS[SDLK_r] = false;
-        action = MainMenu;
+    if (gameState.KEYS[SDLK_r]) {
+        gameState.KEYS[SDLK_r] = false;
+        gameState.action = MainMenu;
     }
 }
 
 void Game::render() {
-    tableTexture->draw({(int)tableScreenOffsetX, (int)tableScreenOffsetY});
-    for (int i = 0; i < balls.size(); i++)
-        balls[i]->draw();
-
-    if (!ballsMoving()) {
-        //draw cue
-        Pos mousePos =  {(mouseX - tableScreenOffsetX)/tableScreenW*tableW, (mouseY - tableScreenOffsetY)/tableScreenH*tableH};
-        if (!ballInHandMode) {
-            double cueAngle = angleBetweenPoints(cueBall->pos, mousePos);
-            cueTexture->_angle = cueAngle * 180 / M_PI;
-            //std::cout << "angle: " << cueTexture->_angle << std::endl; 
-
-            double x = ((cueW + 2*ballRadius + cueBallSpace + shotForce*4) * cosf(cueAngle) + cueW)/2;
-            double y = ((cueW + 2*ballRadius + cueBallSpace + shotForce*4) * sinf(cueAngle) + cueH)/2;
-            double cueX = cueBall->pos.x - x;
-            double cueY = cueBall->pos.y - y;
-
-            cueTexture->_w = cueW*tableScreenW/tableW;
-            cueTexture->_h = cueH*tableScreenH/tableH;
-            cueTexture->draw({(int) cueX*tableScreenW/tableW + tableScreenOffsetX, 
-                            (int) cueY*tableScreenH/tableH + tableScreenOffsetY});
-
-            //drawBallTrajectory(balls, mouseX, cueAngle);
-        }
-    }
-
-    if (messageQueue.size() > 0) {
-        messageQueue.front()->draw(-1, -1);
-        messageQueue.front()->ttl--;
-        if (messageQueue.front()->ttl == 0) messageQueue.pop();
-    }
-
+    currentScene->render();
     SDL_RenderPresent(rend);
     SDL_Delay(17);
     SDL_RenderClear(rend);
 }
 
-void Game::finish(bool winner) {
-    TextBox* winMsg = winner ? new TextBox(10, screenMiddle, false, true) : new TextBox(11, screenMiddle, false, true);
-    tableTexture->draw({(int)tableScreenOffsetX, (int)tableScreenOffsetY});
-    for (int i = 0; i < balls.size(); i++)
-        balls[i]->draw();
-    winMsg->draw(-1, -1);
-    SDL_RenderPresent(rend);
-    SDL_Delay(5000);
-	quitGame();
+void Game::switchScenes(Scene *newScene) {
+    currentScene->exit();
+    currentScene = newScene;
+    currentScene->init();
 }
 
-void Game::quitGame() {
-    std::cout << "quitting!" << std::endl;
-    for (int i = 0; i < balls.size(); i++) {
-        delete(balls[i]);
-    }
-}
+void Game::quitGame() {}

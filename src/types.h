@@ -68,7 +68,7 @@ struct Vector2d {
 typedef Vector2d Pos;
 typedef Vector2d Vel;
 
-enum Action {MainMenu, game, Quit};
+enum Action {MainMenu, Pool, Quit};
 enum BallClass {cueBall, Solid, Striped, Black, None};
 
 struct Player {
@@ -85,5 +85,12 @@ struct Color {
 
 typedef Color Pixel;
 
+struct GameState {
+    bool KEYS[322];  // 322 is the number of SDLK_DOWN events
+    int mouseX;
+    int mouseY;
+    bool mouseClick;
+    Action action;
+};
 
 #endif

@@ -1,6 +1,6 @@
 #include "SDLAux.h"
 #include "physics.h"
-#include "Ball.h"
+#include "Objects/Ball.h"
 #include <fstream>
 #include <iostream>
 #include <bitset>

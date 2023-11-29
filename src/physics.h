@@ -2,8 +2,8 @@
 #define PHYSICS_H
 
 #include "types.h"
-#include "defines.h"
-#include "Ball.h"
+#include "globals.h"
+#include "Objects/Ball.h"
 #include <vector>
 
 

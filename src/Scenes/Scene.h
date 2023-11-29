@@ -5,11 +5,25 @@
 #ifndef POOL_SCENE_H
 #define POOL_SCENE_H
 
+#include <vector>
+
 class Scene {
 public:
     virtual bool init();
-    virtual bool loop();
+    virtual Action loop();
     virtual bool exit();
+
+    virtual void render() {
+        for (GameObject* object : objects) {
+            object->draw();
+        }
+    };
+
+    std::vector<GameObject*> objects;
+
+
+
+
 };
 
 

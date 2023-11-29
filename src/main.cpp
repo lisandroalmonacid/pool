@@ -6,6 +6,8 @@
 #include "Texture.h"
 #include <iostream>
 
+GameState gameState;
+
 SDL_Event event;
 SDL_Window* win;
 SDL_Renderer* rend;
@@ -80,8 +82,6 @@ bool loadMedia() {
         messageTextures[i]->loadFromText(messages[i].c_str(), textBigFont, colorWhite);
     }
 
-    std::cout << "made it here 4" << std::endl;
-
     return true;
 }
 
@@ -124,7 +124,7 @@ int main(int argc, char** args) {
         return -1;
     }
 
-    std::cout << "Media loaded. About to start the game." << std::endl; 
+    std::cout << "Media loaded. About to start the Pool." << std::endl;
 
     Game* game = new Game();
     game->start();
