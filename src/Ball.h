@@ -22,7 +22,7 @@ public:
     Texture* _texture;
 
     void update();
-    float movementAngle();
+    double movementAngle();
     bool isMoving();
 
     void draw();

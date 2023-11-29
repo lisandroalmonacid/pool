@@ -38,7 +38,7 @@ void Ball::update() {
     if (abs(vel.y) < minVelocity) vel.y = 0;
 }
 
-float Ball::movementAngle() { return fmod(atan(vel.y/vel.x) + 2*M_PI, 2*M_PI); }
+double Ball::movementAngle() { return fmod(atan(vel.y/vel.x) + 2*M_PI, 2*M_PI); }
 
 bool Ball::isMoving() { return vel.x != 0 || vel.y != 0; }
 

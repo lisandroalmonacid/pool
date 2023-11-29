@@ -37,8 +37,8 @@ bool isBallCollidingWithWall (Ball* b, Pos p1, Pos p2) {
     return (pointsNorm(b->pos, closestPoint) <= ballRadius);
 }
 
-std::pair<int, float> closestWall(Ball* b) {
-    float distanceToWalls[25];
+std::pair<int, double> closestWall(Ball* b) {
+    double distanceToWalls[25];
 
     for (int i = 1; i < 25; i++)
         distanceToWalls[i] = distanceToWall(b, tableEdges[i-1], tableEdges[i]);
@@ -52,7 +52,7 @@ std::pair<int, float> closestWall(Ball* b) {
     return {minDist, distanceToWalls[minDist]};
 }
 
-float distanceToWall(Ball* b, Pos p1, Pos p2) {
+double distanceToWall(Ball* b, Pos p1, Pos p2) {
     //obtener dirección de la recta que pasa por p1, p2
     Vector2d wallDir = p2 - p1;
 
@@ -82,7 +82,7 @@ Pos intersection(Vector2d v1, Pos p1, Vector2d v2, Pos p2) {
     if (v1.x == 0) return {p1.x, p2.y}; // edge case: vertical lines.
     else if ( v1.y/v1.x == v2.y/v2.x ) return {-1, -1}; // edge case: parallel lines.
 
-    float k2 = (p2.y - p1.y - v1.y*(p2.x - p1.x)/v1.x) / (-v2.y + v1.y*v2.x/v1.x);
+    double k2 = (p2.y - p1.y - v1.y*(p2.x - p1.x)/v1.x) / (-v2.y + v1.y*v2.x/v1.x);
     return {k2*v2.x + p2.x, k2*v2.y + p2.y};
 }
 
@@ -90,7 +90,7 @@ bool ballsAreColliding(Ball* b1, Ball* b2) {
     return (b1->pos - b2->pos).norm() <= (2 * ballRadius);
 }
 
-float pointsNorm(Pos p1, Pos p2) {
+double pointsNorm(Pos p1, Pos p2) {
     return (p1 - p2).norm();
 }
 
@@ -107,14 +107,14 @@ void ballCollision(Ball* b1, Ball* b2) {
     setBallsApart(b1, b2);
 }
 
-float angleBetweenPoints(Pos p1, Pos p2) {
+double angleBetweenPoints(Pos p1, Pos p2) {
     // edge cases: diff.x = 0.
     if (p1 == p2) return 0;
     if (p1.x == p2.x) return (p2.y > p1.y) ? M_PI/2 : M_PI*3/2;
     
 
     Pos diff = p1 - p2;
-    float angle = atanf(diff.y/diff.x);
+    double angle = atanf(diff.y/diff.x);
     
     if (diff.x < 0) angle += M_PI;
 

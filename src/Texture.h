@@ -17,7 +17,7 @@ public:
     void draw(SDL_Point screenPos);
     void setBlendMode();
     void setAlpha();
-    void setAngle(float newAngle);
+    void setAngle(double newAngle);
     void freeTexture();
 
 //private:
@@ -25,7 +25,7 @@ public:
     int _w;
     int _h;
     SDL_Rect* _srcRect;
-    float _angle;
+    double _angle;
     bool _usesRotation;
 
     SDL_Renderer* _rend;

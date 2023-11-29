@@ -1,19 +1,14 @@
-#include "Game.h"
-#include <iostream>
-#include "SDLAux.h"
-#include <cmath>
+//
+// Created by li_al on 28/11/2023.
+//
 
-Game::Game() {
-    //Init KEYS
-    for(int i = 0; i < 322; i++) {
-        KEYS[i] = false;
-    }
-    mouseClick = false;
+#include "PoolScene.h"
+
+bool PoolScene::init() {
     shotForce = 0;
-    action = MainMenu;
 
     for (int i = 0; i < 16; i++) {
-	    Ball* b = new Ball(startingPositions[i], i);
+        Ball* b = new Ball(startingPositions[i], i);
         balls.push_back(b);
     }
     cueBall = balls[0];
@@ -31,80 +26,25 @@ Game::Game() {
 
     firstTouchedBall = nullptr;
 }
+bool PoolScene::loop() {
 
-void Game::start() {
-    std::cout << "Starting game" << std::endl;
-    while (action != Quit) {
-        switch (action) {
-        case MainMenu:
-            mainMenuScreen();
-            break;
-        case game:
-            gameLoop();
-            break;
-        default:
-            break;
-        }
-    }
-    quitGame();
-    return;
 }
 
-void Game::mainMenuScreen() {
-    std::cout << "Main menu!" << std::endl;
-    TextBox* title = new TextBox(0, {screenW/2, screenH/2}, false, true);
-    TextBox* subtitle = new TextBox(1, {screenW/2, screenH/2 + 200}, true, true);
+bool PoolScene::exit() {
 
-    while(action == MainMenu) {
-        processEventQueue();
-
-        if (KEYS[SDLK_SPACE]) {
-            KEYS[SDLK_SPACE] = false;
-            action = game;
-        }
-        if (KEYS[SDLK_ESCAPE]) {
-            KEYS[SDLK_ESCAPE] = false;
-            action = Quit;
-        }
-
-        title->draw(0, 0);
-        subtitle->draw(mouseX, mouseY);
-        SDL_RenderPresent(rend);
-        SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
-        SDL_RenderClear(rend);
-
-        if (mouseClick) {
-            if (subtitle->isHovered(mouseX, mouseY)) {
-                action = game;
-            }
-            mouseClick = false;
-        }
-    }
-
-    std::cout << "Leaving main menu." << std::endl;
-    return;
 }
 
-void Game::gameLoop() {
-    displayTurnMessages(); //first turn
-    while(action == game) {
-        aimLoop();
-        executeShot();
-        nextTurn();
-    }
-}
-
-void Game::switchPlayer() {
+void PoolScene::switchPlayer() {
     curPlayer = !curPlayer;
 }
 
-void Game::restoreCueBall() {
+void PoolScene::restoreCueBall() {
     cueBall->isIn = false;
     cueBall->pos = startingPositions[0];
     cueBall->vel = {0, 0};
 }
 
-void Game::nextTurn() {
+void PoolScene::nextTurn() {
     ballInHand = false;
 
     if (firstTouchedBall == nullptr) {
@@ -130,7 +70,7 @@ void Game::nextTurn() {
         displayTurnMessages();
         firstTouchedBall = nullptr;
         firstPocketedBall = nullptr;
-        return;   
+        return;
     }
 
     if (players[curPlayer]._ballClass == None && firstPocketedBall != nullptr) {
@@ -169,7 +109,7 @@ void Game::nextTurn() {
     return;
 }
 
-void Game::displayClassMessages() {
+void PoolScene::displayClassMessages() {
     int p1MsgNbr = players[0]._ballClass == Solid ? 6 : 8;
     int p2MsgNbr = players[1]._ballClass == Solid ? 7 : 9;
 
@@ -180,7 +120,7 @@ void Game::displayClassMessages() {
     messageQueue.push(p2Msg);
 }
 
-void Game::displayTurnMessages() {
+void PoolScene::displayTurnMessages() {
     TextBox* turnMsg = nullptr;
     TextBox* ballInHandMsg = nullptr;
 
@@ -196,18 +136,18 @@ void Game::displayTurnMessages() {
     if (ballInHand) messageQueue.push(ballInHandMsg);
 }
 
-bool Game::anyBallsIn(BallClass bClass) {
+bool PoolScene::anyBallsIn(BallClass bClass) {
     int l = bClass == Solid ? 1 : 9;
     int h = bClass == Solid ? 7 : 15;
 
     bool res;
     for (int i = l; i < h; i++)
         res = res || balls[i]->isIn;
-    
+
     return res;
 }
 
-void Game::aimLoop() {
+void PoolScene::aimLoop() {
     while (!ballsMoving() && action == game) {
         processEventQueue();
         if (mouseClick) {
@@ -234,7 +174,7 @@ void Game::aimLoop() {
     }
 }
 
-void Game::executeShot() {
+void PoolScene::executeShot() {
     while (ballsMoving() && action == game) {
         processEventQueue();
         updateBalls();
@@ -243,7 +183,7 @@ void Game::executeShot() {
     }
 }
 
-void Game::updateBalls() {
+void PoolScene::updateBalls() {
     for (int i = 0; i < balls.size(); i++) {
         if (balls[i]->isMoving()) {
             balls[i]->update();
@@ -254,7 +194,7 @@ void Game::updateBalls() {
     }
 }
 
-void Game::manageBallCollisions() {
+void PoolScene::manageBallCollisions() {
     for (int i = 0; i < balls.size(); i++) {
         for (int j = i + 1; j < balls.size(); j++){
             if (ballsAreColliding(balls[i], balls[j])) {
@@ -267,12 +207,12 @@ void Game::manageBallCollisions() {
     }
 }
 
-void Game::manageBorderCollisions(Ball* b) {
+void PoolScene::manageBorderCollisions(Ball* b) {
     if (inBounds(b)) {
         b->isCollidingWithWall = false;
         return;
     }
-    //get closest wall to b, and its distance 
+    //get closest wall to b, and its distance
     std::pair<int, double> cWall = closestWall(b);
 
     if (cWall.second < ballRadius) {
@@ -289,7 +229,7 @@ void Game::manageBorderCollisions(Ball* b) {
     }
 }
 
-bool Game::ballsMoving() {
+bool PoolScene::ballsMoving() {
     bool res = false;
 
     for (int i = 0; !res && i < balls.size(); i++)
@@ -298,99 +238,11 @@ bool Game::ballsMoving() {
     return res;
 }
 
-bool Game::areAllBallsIn() {
+bool PoolScene::areAllBallsIn() {
     bool res = true;
 
     for (int i = 0; res && i < balls.size(); i++)
         res = balls[i]->isIn;
 
-    return res;    
-}
-
-void Game::processEventQueue() {
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_KEYDOWN:
-            KEYS[event.key.keysym.sym] = true;
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            mouseClick = true;
-            break;
-        case SDL_MOUSEBUTTONUP:
-            mouseClick = false;
-            break;
-        case SDL_QUIT:
-            action = Quit;
-            break;
-        default:
-            break;
-        }
-    }
-
-    SDL_GetMouseState(&mouseX, &mouseY);
-
-    if (KEYS[SDLK_ESCAPE]) {
-        KEYS[SDLK_ESCAPE] = false;
-        action = Quit;
-    }
-    if (KEYS[SDLK_r]) {
-        KEYS[SDLK_r] = false;
-        action = MainMenu;
-    }
-}
-
-void Game::render() {
-    tableTexture->draw({(int)tableScreenOffsetX, (int)tableScreenOffsetY});
-    for (int i = 0; i < balls.size(); i++)
-        balls[i]->draw();
-
-    if (!ballsMoving()) {
-        //draw cue
-        Pos mousePos =  {(mouseX - tableScreenOffsetX)/tableScreenW*tableW, (mouseY - tableScreenOffsetY)/tableScreenH*tableH};
-        if (!ballInHandMode) {
-            double cueAngle = angleBetweenPoints(cueBall->pos, mousePos);
-            cueTexture->_angle = cueAngle * 180 / M_PI;
-            //std::cout << "angle: " << cueTexture->_angle << std::endl; 
-
-            double x = ((cueW + 2*ballRadius + cueBallSpace + shotForce*4) * cosf(cueAngle) + cueW)/2;
-            double y = ((cueW + 2*ballRadius + cueBallSpace + shotForce*4) * sinf(cueAngle) + cueH)/2;
-            double cueX = cueBall->pos.x - x;
-            double cueY = cueBall->pos.y - y;
-
-            cueTexture->_w = cueW*tableScreenW/tableW;
-            cueTexture->_h = cueH*tableScreenH/tableH;
-            cueTexture->draw({(int) cueX*tableScreenW/tableW + tableScreenOffsetX, 
-                            (int) cueY*tableScreenH/tableH + tableScreenOffsetY});
-
-            //drawBallTrajectory(balls, mouseX, cueAngle);
-        }
-    }
-
-    if (messageQueue.size() > 0) {
-        messageQueue.front()->draw(-1, -1);
-        messageQueue.front()->ttl--;
-        if (messageQueue.front()->ttl == 0) messageQueue.pop();
-    }
-
-    SDL_RenderPresent(rend);
-    SDL_Delay(17);
-    SDL_RenderClear(rend);
-}
-
-void Game::finish(bool winner) {
-    TextBox* winMsg = winner ? new TextBox(10, screenMiddle, false, true) : new TextBox(11, screenMiddle, false, true);
-    tableTexture->draw({(int)tableScreenOffsetX, (int)tableScreenOffsetY});
-    for (int i = 0; i < balls.size(); i++)
-        balls[i]->draw();
-    winMsg->draw(-1, -1);
-    SDL_RenderPresent(rend);
-    SDL_Delay(5000);
-	quitGame();
-}
-
-void Game::quitGame() {
-    std::cout << "quitting!" << std::endl;
-    for (int i = 0; i < balls.size(); i++) {
-        delete(balls[i]);
-    }
+    return res;
 }

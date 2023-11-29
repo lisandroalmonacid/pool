@@ -9,14 +9,14 @@
 #include "Ball.h"
 
 
-void drawCircle(Pos center, float radius, Color Color);
+void drawCircle(Pos center, double radius, Color Color);
 void drawRect(Pos start, int width, int height, Color color);
 void drawMainMenuScreen();
 void drawTable();
 void drawBalls(Ball* balls);
 void drawCue(Ball* balls);
 void drawBMP(Pos startPos, char* filepath);
-void drawBallTrajectory(std::vector<Ball*> balls, float mouseX, float cueAngle);
+void drawBallTrajectory(std::vector<Ball*> balls, double mouseX, double cueAngle);
 void drawWallCollision(Ball* b, Pos l1, Pos l2);
 void drawBallCollision(Ball* b1, Ball* b2);
 

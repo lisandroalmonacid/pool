@@ -13,7 +13,7 @@ class Game {
 public:
   Game();
   void mainMenuScreen();
-  void game_screen();
+  void gameScreen();
   void gameLoop();
 
   void nextTurn();
@@ -54,7 +54,7 @@ private:
 
   Player players[2];
 
-  bool currPlayer; //0 = player 1; 1 = player 2.
+  bool curPlayer; //0 = player 1; 1 = player 2.
   bool ballInHand;
 
   bool ballInHandMode;

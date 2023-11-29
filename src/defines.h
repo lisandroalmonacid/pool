@@ -7,28 +7,28 @@
 #include <SDL_image.h>
 #include <string>
 
-const float ballRadius = 75;
-const float cueW = 3516;
-const float cueH = 61;
-const float cueBallSpace = ballRadius / 4;
+const double ballRadius = 75;
+const double cueW = 3516;
+const double cueH = 61;
+const double cueBallSpace = ballRadius / 4;
 
-const int screenH = 720;
-const int screenW = 1280;
+const int screenH = 1080;
+const int screenW = 1920;
 const SDL_Point screenOrigin = {0, 0};
 const SDL_Point screenEnd = {screenW, screenH};
 const SDL_Point screenMiddle = {screenW/2, screenH/2};
 
-const float tableW = 4551;
-const float tableH = 2570;
-const float tableScreenW = 1200;
-const float tableScreenH = tableH * tableScreenW/tableW;
-const float tableScreenOffsetX = (screenW - tableScreenW) / 2;
-const float tableScreenOffsetY = (screenH - tableScreenH) / 2;
+const double tableW = 4551;
+const double tableH = 2570;
+const double tableScreenW = 1200;
+const double tableScreenH = tableH * tableScreenW/tableW;
+const double tableScreenOffsetX = (screenW - tableScreenW) / 2;
+const double tableScreenOffsetY = (screenH - tableScreenH) / 2;
 
-const float tableLeftBorder = 293;
-const float tableRightBorder = 4256;
-const float tableUpBorder = 293;
-const float tableDownBorder = 2277;
+const double tableLeftBorder = 293;
+const double tableRightBorder = 4256;
+const double tableUpBorder = 293;
+const double tableDownBorder = 2277;
 
 const Pos tableEdges[25] = {{332, 212}, {417, 293}, {2106, 293}, {2140, 212},
 							{2357, 212}, {2392, 293}, {4100, 293}, {4184, 212},
@@ -39,11 +39,11 @@ const Pos tableEdges[25] = {{332, 212}, {417, 293}, {2106, 293}, {2140, 212},
 							{332, 212}
 							};
 
-const float tableHorizontalMiddle = tableW/2 + tableLeftBorder;
-const float tableVerticalMiddle = tableH/2 + tableUpBorder;
+const double tableHorizontalMiddle = tableW/2 + tableLeftBorder;
+const double tableVerticalMiddle = tableH/2 + tableUpBorder;
 
-const float frictionEffect = 0.05;
-const float minVelocity = 0.1; // has to be greater than the frictionEffect.
+const double frictionEffect = 0.05;
+const double minVelocity = 0.1; // has to be greater than the frictionEffect.
 
 const std::vector<Pos> startingPositions = {
 	{500, tableH/2}, //white_ball

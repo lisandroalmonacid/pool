@@ -7,8 +7,8 @@
 #include <iostream>
 
 struct Vector2d {
-  float x;
-  float y;
+  double x;
+  double y;
 
   // LOGICAL OPERATORS
 
@@ -21,14 +21,14 @@ struct Vector2d {
   Vector2d operator-(Vector2d v) { return {this->x - v.x, this->y - v.y}; }
   Vector2d operator*(Vector2d v) { return {this->x * v.x, this->y * v.y}; }
   Vector2d operator/(Vector2d v) { return {this->x / v.x, this->y / v.y}; }
-  float operator%(Vector2d v) { return {this->x * v.x + this->y * v.y}; } //this is the scalar product.
+  double operator%(Vector2d v) { return {this->x * v.x + this->y * v.y}; } //this is the scalar product.
 
   // SCALAR OPERATORS
 
-  Vector2d operator+(float f) { return {this->x + f, this->y + f}; }
-  Vector2d operator-(float f) { return {this->x - f, this->y - f}; }
-  Vector2d operator*(float f) { return {this->x * f, this->y * f}; }
-  Vector2d operator/(float f) { return {this->x / f, this->y / f}; }
+  Vector2d operator+(double f) { return {this->x + f, this->y + f}; }
+  Vector2d operator-(double f) { return {this->x - f, this->y - f}; }
+  Vector2d operator*(double f) { return {this->x * f, this->y * f}; }
+  Vector2d operator/(double f) { return {this->x / f, this->y / f}; }
 
   // ASSIGNMENT OPERATORS
   Vector2d operator=(Vector2d v) { 
@@ -50,9 +50,12 @@ struct Vector2d {
   }
 
   // AUX
-
-  float norm() {return sqrtf(powf(x, 2) + powf(y, 2));}
-  float squareNorm() { return powf(x, 2) + powf(y, 2);}
+  double norm() const {
+      return sqrtf(powf(x, 2) + powf(y, 2));
+  }
+  double squareNorm() const {
+      return powf(x, 2) + powf(y, 2);
+  }
   Vector2d unitVector() {return *this/this->norm();}
 
   friend std::ostream& operator<<(std::ostream& os, const Vector2d& v) {

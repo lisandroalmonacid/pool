@@ -16,7 +16,7 @@ bool Texture::loadFromFile(const char* filepath) {
         this->freeTexture();
 
     _texture = IMG_LoadTexture(_rend, filepath);
-    SDL_QueryTexture(_texture, NULL, NULL, &_w, &_h);
+    SDL_QueryTexture(_texture, nullptr, nullptr, &_w, &_h);
     
     return true;
 }
@@ -29,7 +29,7 @@ bool Texture::loadFromText(const char* text, TTF_Font* font, SDL_Color color) {
     _texture = SDL_CreateTextureFromSurface(_rend, tmp);
     SDL_FreeSurface(tmp);
     tmp = nullptr;
-    SDL_QueryTexture(_texture, NULL, NULL, &_w, &_h);
+    SDL_QueryTexture(_texture, nullptr, nullptr, &_w, &_h);
 
     return true;
 }
@@ -47,7 +47,7 @@ void Texture::setBlendMode() {}
 
 void Texture::setAlpha() {}
 
-void Texture::setAngle(float newAngle) {
+void Texture::setAngle(double newAngle) {
     _angle = newAngle;
 }
 

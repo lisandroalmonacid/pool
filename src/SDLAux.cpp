@@ -5,7 +5,7 @@
 #include <iostream>
 #include <bitset>
 
-void drawCircle(Pos center, float radius, Color Color) {
+void drawCircle(Pos center, double radius, Color Color) {
 
     SDL_SetRenderDrawColor(rend, Color.r, Color.g, Color.b, Color.a);
     int maxPointsCount = int(4*radius*radius); //round-up pi.
@@ -18,9 +18,9 @@ void drawCircle(Pos center, float radius, Color Color) {
 
         for (int x = up_left.x; x < up_left.x + 2 * radius; x++) {
             for (int y = up_left.y; y < up_left.y + 2 * radius; y++) {
-                float distX = x - center.x;
-                float distY = y - center.y;
-                float norm = sqrt(pow(distX, 2) + pow(distY, 2));
+                double distX = x - center.x;
+                double distY = y - center.y;
+                double norm = sqrt(pow(distX, 2) + pow(distY, 2));
                 if (std::abs(radius-norm) < 2 && pointsCount < maxPointsCount) {
                     points[pointsCount] = {x, y};
                     pointsCount++;
@@ -84,10 +84,10 @@ void drawBallCollision(Ball* b1, Ball* b2) {
     SDL_RenderClear(rend);
 }
 
-void drawBallTrajectory(std::vector<Ball*> balls, float mouseX, float cueAngle) {
+void drawBallTrajectory(std::vector<Ball*> balls, double mouseX, double cueAngle) {
     //draw projected ball trajectory
     int maxLineLen = pointsNorm({0, 0}, {screenW, screenH});
-    float lineAngle = balls[0]->pos.x > mouseX ? cueAngle : cueAngle + M_PI;
+    double lineAngle = balls[0]->pos.x > mouseX ? cueAngle : cueAngle + M_PI;
     Pos lineEnd = {balls[0]->pos.x + maxLineLen*cos(cueAngle), balls[0]->pos.y + maxLineLen*sin(cueAngle)};
     
     Pos iWallMin = {-10000, -10000};

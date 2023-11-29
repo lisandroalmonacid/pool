@@ -5,10 +5,10 @@ OBJS = src\main.cpp src\Game.cpp src\Game.h src\defines.h src\types.h src\physic
 CC = g++
 
 #INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS = -IC:\SDL\SDL2-2.26.2\i686-w64-mingw32\include\SDL2 -IC:\SDL\SDL2_image-2.6.3\i686-w64-mingw32\include\SDL2 -IC:\SDL\SDL2_ttf-2.20.2\i686-w64-mingw32\include\SDL2
+INCLUDE_PATHS = -IE:\SDL\SDL2-2.26.2\i686-w64-mingw32\include\SDL2 -IE:\SDL\SDL2_image-2.6.3\i686-w64-mingw32\include\SDL2 -IE:\SDL\SDL2_ttf-2.20.2\i686-w64-mingw32\include\SDL2
 
 #LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -LC:\SDL\SDL2-2.26.2\i686-w64-mingw32\lib -LC:\SDL\SDL2_image-2.6.3\i686-w64-mingw32\lib -LC:\SDL\SDL2_ttf-2.20.2\i686-w64-mingw32\lib
+LIBRARY_PATHS = -LE:\SDL\SDL2-2.26.2\i686-w64-mingw32\lib -LE:\SDL\SDL2_image-2.6.3\i686-w64-mingw32\lib -LE:\SDL\SDL2_ttf-2.20.2\i686-w64-mingw32\lib
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
