@@ -11,9 +11,16 @@ bool PoolScene::init() {
     for (int i = 0; i < 16; i++) {
         Ball* b = new Ball(startingPositions[i], i);
         balls.push_back(b);
+        objects.push_back(b);
     }
     cueBall = balls[0];
     eightBall = balls[8];
+
+    cue = new Cue(cueTexture, cueBall);
+    objects.push_back(cue);
+
+    table = new Table(tableTexture);
+    objects.push_back(table);
 
     // init players with correct ID and no ball class.
     players[0] = {0, None};
@@ -26,16 +33,26 @@ bool PoolScene::init() {
     aimMode = false;
 
     firstTouchedBall = nullptr;
+    poolAction = Aim;
+
+    //displayTurnMessages();
 }
 Action PoolScene::loop() {
-    displayTurnMessages(); //first turn
-    while(gameState.action == Pool) {
-        if (aimMode)
+    switch (poolAction) {
+        case Aim: {
             aimLoop();
-        else
+            break;
+        }
+        case Shoot: {
             executeShot();
-        nextTurn();
+            break;
+        }
+        case NextTurn: {
+            nextTurn();
+            break;
+        }
     }
+    return Pool;
 }
 
 bool PoolScene::exit() {
@@ -56,6 +73,7 @@ void PoolScene::restoreCueBall() {
 
 void PoolScene::nextTurn() {
     ballInHand = false;
+    poolAction = Aim;
 
     if (firstTouchedBall == nullptr) {
         if (cueBall->isIn) restoreCueBall();
@@ -115,8 +133,6 @@ void PoolScene::nextTurn() {
         firstPocketedBall = nullptr;
         return;
     }
-
-    return;
 }
 
 void PoolScene::displayClassMessages() {
@@ -177,12 +193,16 @@ void PoolScene::aimLoop() {
         cueBall->vel.x = shotForce * cos(cueAngle);
         cueBall->vel.y = shotForce * sin(cueAngle);
         shotForce = 0;
+
+        if (ballsMoving()) poolAction = Shoot;
     }
 }
 
 void PoolScene::executeShot() {
     updateBalls();
     manageBallCollisions();
+
+    if (!ballsMoving()) poolAction = NextTurn;
 }
 
 void PoolScene::updateBalls() {
@@ -251,7 +271,7 @@ bool PoolScene::areAllBallsIn() {
 
 void PoolScene::finish(bool winner) {
     TextBox* winMsg = winner ? new TextBox(10, screenMiddle, false, true) : new TextBox(11, screenMiddle, false, true);
-    tableTexture->draw({(int)tableScreenOffsetX, (int)tableScreenOffsetY});
+    tableTexture->draw({tableScreenOffsetX, tableScreenOffsetY});
 
     for (int i = 0; i < balls.size(); i++)
         balls[i]->draw();
@@ -263,8 +283,12 @@ void PoolScene::finish(bool winner) {
 }
 
 void PoolScene::render() {
-    for (GameObject* object : objects) {
-        object->draw();
+    table->draw();
+    for (Ball* ball : balls) {
+        ball->draw();
+    }
+    if (poolAction == Aim && !ballInHandMode) {
+        cue->draw(shotForce);
     }
     if (messageQueue.size() > 0) {
         messageQueue.front()->draw();

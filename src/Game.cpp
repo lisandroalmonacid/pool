@@ -19,10 +19,9 @@ void Game::start() {
     currentScene->init();
 
     while (gameState.action != Quit) {
+        gameState.action = currentScene->loop();
         processEventQueue();
         render();
-
-        gameState.action = currentScene->loop();
 
         Scene* nextScene;
         switch (gameState.action) {
@@ -76,6 +75,7 @@ void Game::render() {
     currentScene->render();
     SDL_RenderPresent(rend);
     SDL_Delay(17);
+    SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
     SDL_RenderClear(rend);
 }
 

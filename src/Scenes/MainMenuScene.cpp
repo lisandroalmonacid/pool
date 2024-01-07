@@ -7,14 +7,12 @@
 bool MainMenuScene::init() {
     std::cout << "Entering main menu" << std::endl;
     title = new TextBox(0, screenMiddle, false, true);
-
     subtitle = new TextBox(1, {screenW/2, screenH/2 + 200}, true, true);
+    objects.push_back(title);
+    objects.push_back(subtitle);
 }
 
 Action MainMenuScene::loop() {
-    title->draw();
-    subtitle->draw();
-
     if (gameState.mouseClick) {
         if (subtitle->isHovered()) {
             return Pool;

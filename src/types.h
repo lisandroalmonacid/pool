@@ -93,4 +93,6 @@ struct GameState {
     Action action;
 };
 
+enum PoolAction {Aim, Shoot, NextTurn};
+
 #endif

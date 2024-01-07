@@ -11,12 +11,17 @@
 #include "../Objects/Ball.h"
 #include "../Objects/TextBox.h"
 #include "Scene.h"
+#include "../Objects/Cue.h"
+#include "../Objects/Table.h"
 
 class PoolScene : public Scene {
 
     std::vector<Ball*> balls;
     Ball* cueBall;
     Ball* eightBall;
+
+    Cue* cue;
+    Table* table;
 
     Player players[2];
 
@@ -29,6 +34,7 @@ class PoolScene : public Scene {
     Ball* firstPocketedBall;
 
     std::queue<TextBox*> messageQueue;
+    PoolAction poolAction;
 
     bool init();
     Action loop();

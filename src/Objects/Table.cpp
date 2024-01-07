@@ -10,7 +10,7 @@ Table::~Table() {}
 
 void Table::draw() {
     _texture->draw({
-        (int) tableScreenOffsetX,
-        (int) tableScreenOffsetY
+        tableScreenOffsetX,
+        tableScreenOffsetY
     });
 }

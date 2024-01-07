@@ -16,7 +16,7 @@ const int screenH = 1080;
 const int screenW = 1920;
 const SDL_Point screenOrigin = {0, 0};
 const SDL_Point screenEnd = {screenW, screenH};
-const SDL_Point screenMiddle = {screenW/2, screenH/2};
+const Pos screenMiddle = {screenW/2, screenH/2};
 
 const double tableW = 4551;
 const double tableH = 2570;

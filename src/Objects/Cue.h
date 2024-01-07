@@ -10,17 +10,15 @@
 #include "../globals.h"
 #include "Ball.h"
 #include "../physics.h"
-#include "../Scenes/PoolScene.h"
 
 class Cue : public GameObject {
 public:
     Cue(Texture* cueTexture, Ball* cueBall);
     ~Cue();
-    void draw() override;
+    void draw(int shotForce);
 private:
     Texture* _texture;
     Ball* _cueBall;
-    PoolScene* scene;
 };
 
 

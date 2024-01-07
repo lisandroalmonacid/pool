@@ -12,7 +12,7 @@
 class Scene {
 public:
     virtual bool init() {return true;};
-    virtual Action loop() {return MainMenu;};
+    virtual Action loop() {return Pool;};
     virtual bool exit() {return true;};
 
     virtual void render() {
