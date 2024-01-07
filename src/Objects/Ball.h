@@ -4,8 +4,6 @@
 #include "../types.h"
 #include "../globals.h"
 #include "GameObject.h"
-#include <SDL.h>
-#include <SDL_image.h>
 #include <string>
 
 class Ball : public GameObject {
@@ -27,8 +25,8 @@ public:
     double movementAngle();
     bool isMoving();
 
-    SDL_Point drawPos();
-    SDL_Point screenPos();
+    Pos drawPos();
+    Pos screenPos();
 };
 
 #endif

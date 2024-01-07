@@ -6,12 +6,14 @@
 #define POOL_SCENE_H
 
 #include <vector>
+#include "../types.h"
+#include "../Objects/GameObject.h"
 
 class Scene {
 public:
-    virtual bool init();
-    virtual Action loop();
-    virtual bool exit();
+    virtual bool init() {return true;};
+    virtual Action loop() {return MainMenu;};
+    virtual bool exit() {return true;};
 
     virtual void render() {
         for (GameObject* object : objects) {
@@ -20,10 +22,6 @@ public:
     };
 
     std::vector<GameObject*> objects;
-
-
-
-
 };
 
 

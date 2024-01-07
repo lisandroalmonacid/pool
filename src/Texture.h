@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include "types.h"
 
 class Texture {
 public:
@@ -14,7 +15,7 @@ public:
 
     bool loadFromText(const char* text, TTF_Font* font, SDL_Color color);
 
-    void draw(SDL_Point screenPos);
+    void draw(Pos screenPos);
     void setBlendMode();
     void setAlpha();
     void setAngle(double newAngle);

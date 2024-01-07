@@ -1,6 +1,6 @@
 #include "TextBox.h"
 
-TextBox::TextBox(int messageNumber, SDL_Point screenPos, bool bordered, bool centered) {
+TextBox::TextBox(int messageNumber, Pos screenPos, bool bordered, bool centered) {
     _texture = messageTextures[messageNumber];
     _screenPos = screenPos;
     _bordered = bordered;
@@ -18,7 +18,7 @@ TextBox::~TextBox() {
 }
 
 void TextBox::draw() {
-    SDL_Rect dstRect = {_screenPos.x, _screenPos.y, _texture->_w, _texture->_h};
+    SDL_Rect dstRect = {(int) _screenPos.x, (int) _screenPos.y, _texture->_w, _texture->_h};
 
     if (isHovered()) {
         SDL_SetRenderDrawColor(rend, 255, 255, 0, 100);
@@ -33,6 +33,6 @@ void TextBox::draw() {
 }
 
 bool TextBox::isHovered() {
-    return (_screenPos.x <= mouseX) && (_screenPos.x + _texture->_w >= mouseX) &&
-            (_screenPos.y <= mouseY) && (_screenPos.y + _texture->_h >= mouseY);
+    return (_screenPos.x <= gameState.mouseX) && (_screenPos.x + _texture->_w >= gameState.mouseX) &&
+            (_screenPos.y <= gameState.mouseY) && (_screenPos.y + _texture->_h >= gameState.mouseY);
 }

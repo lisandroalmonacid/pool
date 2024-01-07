@@ -6,8 +6,6 @@
 #include "Objects/Ball.h"
 #include <vector>
 
-
-
 //manage collisions
 bool ballsAreColliding(Ball* b1, Ball* b2);
 void ballCollision(Ball* b1, Ball* b2);

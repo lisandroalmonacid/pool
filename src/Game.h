@@ -1,12 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "physics.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <vector>
-#include "Objects/Ball.h"
-#include "Objects/TextBox.h"
 #include "Scenes/Scene.h"
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/PoolScene.h"

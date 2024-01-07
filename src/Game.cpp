@@ -1,11 +1,9 @@
 #include "Game.h"
 #include <iostream>
-#include "SDLAux.h"
-#include <cmath>
 
 Game::Game() {
     //Init KEYS
-    for(int i = 0; i < 322; i++) {
+    for (int i = 0; i < 322; i++) {
         gameState.KEYS[i] = false;
     }
     gameState.mouseClick = false;
@@ -20,16 +18,9 @@ void Game::start() {
     currentScene = mainMenuScene;
     currentScene->init();
 
-    int t = 0;
-
     while (gameState.action != Quit) {
         processEventQueue();
-
-        t++;
-        if (t == 100) {
-            render();
-            t = 0;
-        }
+        render();
 
         gameState.action = currentScene->loop();
 

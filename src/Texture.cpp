@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "types.h"
 #include <iostream>
 
 Texture::Texture(SDL_Renderer* rend) : _rend(rend), _usesRotation(false) {
@@ -34,8 +35,8 @@ bool Texture::loadFromText(const char* text, TTF_Font* font, SDL_Color color) {
     return true;
 }
 
-void Texture::draw(SDL_Point screenPos) {
-    SDL_Rect dstRect = {screenPos.x, screenPos.y, _w, _h};
+void Texture::draw(Pos screenPos) {
+    SDL_Rect dstRect = {(int) screenPos.x, (int) screenPos.y, _w, _h};
     if (_usesRotation) {
         SDL_RenderCopyEx(_rend, _texture, _srcRect, &dstRect, _angle, nullptr, SDL_FLIP_HORIZONTAL);
     } else {

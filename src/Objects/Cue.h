@@ -10,6 +10,7 @@
 #include "../globals.h"
 #include "Ball.h"
 #include "../physics.h"
+#include "../Scenes/PoolScene.h"
 
 class Cue : public GameObject {
 public:
@@ -19,6 +20,7 @@ public:
 private:
     Texture* _texture;
     Ball* _cueBall;
+    PoolScene* scene;
 };
 
 

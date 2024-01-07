@@ -1,6 +1,7 @@
 #ifndef TEXTBOX_H
 #define TEXTBOX_H
 
+#include "GameObject.h"
 #include "../Texture.h"
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -9,7 +10,7 @@
 
 class TextBox : public GameObject {
 public:
-  TextBox(int messageNumber, SDL_Point screenPos, bool bordered, bool centered);
+  TextBox(int messageNumber, Pos screenPos, bool bordered, bool centered);
   ~TextBox();
   void draw() override;
   bool isHovered();
@@ -17,7 +18,7 @@ public:
 
 private:  
   Texture* _texture;
-  SDL_Point _screenPos;
+  Pos _screenPos;
   bool _bordered;
   bool _hovered;
   bool _clicked;

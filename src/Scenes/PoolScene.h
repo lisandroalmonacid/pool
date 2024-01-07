@@ -10,9 +10,9 @@
 #include <queue>
 #include "../Objects/Ball.h"
 #include "../Objects/TextBox.h"
+#include "Scene.h"
 
 class PoolScene : public Scene {
-    int shotForce;
 
     std::vector<Ball*> balls;
     Ball* cueBall;
@@ -23,15 +23,17 @@ class PoolScene : public Scene {
     bool curPlayer; //0 = player 1; 1 = player 2.
     bool ballInHand;
 
-    bool ballInHandMode;
     bool aimMode;
 
     Ball* firstTouchedBall;
     Ball* firstPocketedBall;
 
+    std::queue<TextBox*> messageQueue;
+
     bool init();
     Action loop();
     bool exit();
+    void render() override;
 
     void nextTurn();
     void switchPlayer();
@@ -46,10 +48,16 @@ class PoolScene : public Scene {
     void updateBalls();
     void manageBallCollisions();
     void manageBorderCollisions(Ball* b);
-    bool ballsMoving();
+
     bool areAllBallsIn();
 
     void finish(bool winner);
+
+public:
+    bool ballsMoving();
+
+    bool ballInHandMode;
+    int shotForce;
 };
 
 

@@ -5,6 +5,7 @@
 #include "PoolScene.h"
 
 bool PoolScene::init() {
+    std::cout << "Entering Pool" << std::endl;
     shotForce = 0;
 
     for (int i = 0; i < 16; i++) {
@@ -28,9 +29,11 @@ bool PoolScene::init() {
 }
 Action PoolScene::loop() {
     displayTurnMessages(); //first turn
-    while(action == game) {
-        aimLoop();
-        executeShot();
+    while(gameState.action == Pool) {
+        if (aimMode)
+            aimLoop();
+        else
+            executeShot();
         nextTurn();
     }
 }
@@ -155,39 +158,31 @@ bool PoolScene::anyBallsIn(BallClass bClass) {
 }
 
 void PoolScene::aimLoop() {
-    while (!ballsMoving() && action == Pool) {
-        processEventQueue();
-        if (mouseClick) {
-            Pos mousePos = {(mouseX - tableScreenOffsetX)/tableScreenW*tableW, (mouseY - tableScreenOffsetY)/tableScreenH*tableH};
-            if ( ((mousePos - cueBall->pos).norm() < ballRadius || ballInHandMode) && !aimMode && ballInHand) {
-                ballInHandMode = true;
-                cueBall->pos = mousePos;
-                shotForce = 0;
-            } else if (shotForce < 25 && !ballInHandMode) {
-                aimMode = true;
-                shotForce = shotForce + 2;
-                double cueAngle = angleBetweenPoints({cueBall->screenPos().x, cueBall->screenPos().y}, {mouseX, mouseY});
-            }
-        } else {
-            ballInHandMode = false;
-            aimMode = false;
-
-            double cueAngle = angleBetweenPoints({cueBall->screenPos().x, cueBall->screenPos().y}, {mouseX, mouseY});
-            cueBall->vel.x = shotForce * cos(cueAngle);
-            cueBall->vel.y = shotForce * sin(cueAngle);
+    if (gameState.mouseClick) {
+        Pos mousePos = {(gameState.mouseX - tableScreenOffsetX)/tableScreenW*tableW, (gameState.mouseY - tableScreenOffsetY)/tableScreenH*tableH};
+        if ( ((mousePos - cueBall->pos).norm() < ballRadius || ballInHandMode) && !aimMode && ballInHand) {
+            ballInHandMode = true;
+            cueBall->pos = mousePos;
             shotForce = 0;
+        } else if (shotForce < 25 && !ballInHandMode) {
+            aimMode = true;
+            shotForce = shotForce + 2;
+            double cueAngle = angleBetweenPoints({cueBall->screenPos().x, cueBall->screenPos().y}, {gameState.mouseX, gameState.mouseY});
         }
-        render();
+    } else {
+        ballInHandMode = false;
+        aimMode = false;
+
+        double cueAngle = angleBetweenPoints({cueBall->screenPos().x, cueBall->screenPos().y}, {gameState.mouseX, gameState.mouseY});
+        cueBall->vel.x = shotForce * cos(cueAngle);
+        cueBall->vel.y = shotForce * sin(cueAngle);
+        shotForce = 0;
     }
 }
 
 void PoolScene::executeShot() {
-    while (ballsMoving() && action == game) {
-        processEventQueue();
-        updateBalls();
-        manageBallCollisions();
-        render();
-    }
+    updateBalls();
+    manageBallCollisions();
 }
 
 void PoolScene::updateBalls() {
@@ -257,10 +252,23 @@ bool PoolScene::areAllBallsIn() {
 void PoolScene::finish(bool winner) {
     TextBox* winMsg = winner ? new TextBox(10, screenMiddle, false, true) : new TextBox(11, screenMiddle, false, true);
     tableTexture->draw({(int)tableScreenOffsetX, (int)tableScreenOffsetY});
+
     for (int i = 0; i < balls.size(); i++)
         balls[i]->draw();
-    winMsg->draw(-1, -1);
+
+    winMsg->draw();
     SDL_RenderPresent(rend);
     SDL_Delay(5000);
-    quitGame();
+    gameState.action = Quit;
 }
+
+void PoolScene::render() {
+    for (GameObject* object : objects) {
+        object->draw();
+    }
+    if (messageQueue.size() > 0) {
+        messageQueue.front()->draw();
+        messageQueue.front()->ttl--;
+        if (messageQueue.front()->ttl == 0) messageQueue.pop();
+    }
+};

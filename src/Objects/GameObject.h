@@ -7,7 +7,7 @@
 
 class GameObject {
 public:
-    virtual void draw();
+    virtual void draw() {};
 };
 
 #endif //POOL_GAMEOBJECT_H

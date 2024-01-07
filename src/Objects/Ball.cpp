@@ -46,7 +46,7 @@ void Ball::draw() {
     _texture->draw(drawPos());
 }
 
-SDL_Point Ball::drawPos() {
+Pos Ball::drawPos() {
     Pos drawPos = pos - ballRadius;
     Pos tableScreenPos = {tableScreenOffsetX, tableScreenOffsetY};
     Vector2d tableDim = {tableW, tableH};
@@ -55,7 +55,7 @@ SDL_Point Ball::drawPos() {
     return {res.x, res.y};
 }
 
-SDL_Point Ball::screenPos() {
+Pos Ball::screenPos() {
     Pos tableScreenPos = {tableScreenOffsetX, tableScreenOffsetY};
     Vector2d tableDim = {tableW, tableH};
     Vector2d tableScreenDim = {tableScreenW, tableScreenH};
