@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = src\Game.cpp src\Game.h src\globals.h src\main.cpp src\physics.cpp src\physics.h src\SDLAux.cpp src\SDLAux.h src\Texture.cpp src\Texture.h src\types.h src\Objects\Ball.cpp src\Objects\Ball.h src\Objects\Cue.cpp src\Objects\Cue.h src\Objects\GameObject.h src\Objects\MessageBox.cpp src\Objects\MessageBox.h src\Objects\Table.cpp src\Objects\Table.h src\Objects\TextBox.cpp src\Objects\TextBox.h src\Scenes\MainMenuScene.cpp src\Scenes\MainMenuScene.h src\Scenes\PoolScene.cpp src\Scenes\PoolScene.h src\Scenes\Scene.h src\Scenes\SDL2.dll src\Scenes\SDL2_image.dll src\Scenes\SDL2_ttf.dll
+OBJS = src\Game.cpp src\Game.h src\globals.h src\main.cpp src\physics.cpp src\physics.h src\SDLAux.cpp src\SDLAux.h src\Texture.cpp src\Texture.h src\types.h src\Objects\StaticObject.cpp src\Objects\StaticObject.h src\Objects\Ball.cpp src\Objects\Ball.h src\Objects\Cue.cpp src\Objects\Cue.h src\Objects\GameObject.h src\Objects\MessageBox.cpp src\Objects\MessageBox.h src\Objects\Table.cpp src\Objects\Table.h src\Objects\TextBox.cpp src\Objects\TextBox.h src\Scenes\MainMenuScene.cpp src\Scenes\MainMenuScene.h src\Scenes\PoolScene.cpp src\Scenes\PoolScene.h src\Scenes\Scene.h src\Scenes\SDL2.dll src\Scenes\SDL2_image.dll src\Scenes\SDL2_ttf.dll
 
 #CC specifies which compiler we're using
 CC = g++

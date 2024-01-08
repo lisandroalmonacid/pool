@@ -73,9 +73,11 @@ bool loadMedia() {
     TTF_Font* textSmallFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
 
     titleTexture = new Texture(rend);
-    titleTexture->loadFromText("POOL", titleFont, colorWhite);
+    titleTexture->loadFromFile("img/mainTitle.png");
+    //titleTexture->loadFromText("POOL", titleFont, colorWhite);
     subtitleTexture = new Texture(rend);
-    subtitleTexture->loadFromText("PRESS SPACE TO PLAY", subtitleFont, colorWhite);
+    subtitleTexture->loadFromFile("img/subtitle.png");
+    //->loadFromText("PRESS SPACE TO PLAY", subtitleFont, colorWhite);
 
     for (int i = 0; i < msgAmount; i++) {
         messageTextures[i] = new Texture(rend);

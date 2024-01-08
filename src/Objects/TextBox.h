@@ -16,7 +16,7 @@ public:
   bool isHovered();
   int ttl;
 
-private:  
+private:
   Texture* _texture;
   Pos _screenPos;
   bool _bordered;

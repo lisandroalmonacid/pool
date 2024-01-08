@@ -8,14 +8,15 @@
 #include "Scene.h"
 #include "../Objects/TextBox.h"
 #include "../globals.h"
+#include "../Objects/StaticObject.h"
 
 class MainMenuScene : public Scene {
     bool init() override;
     Action loop() override;
     bool exit() override;
 
-    TextBox* title;
-    TextBox* subtitle;
+    StaticObject* title;
+    StaticObject* subtitle;
 };
 
 
