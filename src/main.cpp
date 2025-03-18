@@ -68,8 +68,23 @@ bool loadMedia() {
     }
 
     TTF_Font* titleFont = TTF_OpenFont("fonts/BRITANIC.ttf", 100);
+
+    if (titleFont == nullptr) {
+        std::cout << "Failed to initialize title font" << std::endl;
+    }
+    
     TTF_Font* subtitleFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
+
+    if (subtitleFont == nullptr) {
+        std::cout << "Failed to initialize subtitle font" << std::endl;
+    }
+    
     TTF_Font* textBigFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
+
+    if (textBigFont == nullptr) {
+        std::cout << "Failed to initialize text big font" << std::endl;
+    }
+    
     // TTF_Font* textSmallFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
 
     titleTexture = new Texture(rend);

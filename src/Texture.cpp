@@ -27,6 +27,11 @@ bool Texture::loadFromText(const char* text, TTF_Font* font, SDL_Color color) {
         this->freeTexture();
 
     SDL_Surface* tmp = TTF_RenderText_Solid(font, text, color);
+
+    if (tmp == nullptr) {
+        std::cout << "Failed to initialize surface.";
+    }
+
     _texture = SDL_CreateTextureFromSurface(_rend, tmp);
     SDL_FreeSurface(tmp);
     tmp = nullptr;
