@@ -111,6 +111,9 @@ bool quit() {
     for (int i = 0; i < 16; i++)
         ballTextures[i]->freeTexture();
 
+    titleTexture->freeTexture();
+    subtitleTexture->freeTexture();
+    
     for (int i = 0; i < msgAmount; i++)
         messageTextures[i]->freeTexture();
 
@@ -141,7 +144,7 @@ int main(int argc, char** args) {
         return -1;
     }
 
-    std::cout << "Media loaded. About to start the Pool." << std::endl;
+    std::cout << "Media loaded. Starting game." << std::endl;
 
     Game* game = new Game();
     game->start();

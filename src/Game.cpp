@@ -2,7 +2,6 @@
 #include <iostream>
 
 Game::Game() {
-    //Init KEYS
     for (int i = 0; i < 322; i++) {
         gameState.KEYS[i] = false;
     }
