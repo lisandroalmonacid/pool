@@ -2,7 +2,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "Game.h"
-#include "SDLAux.h"
+// #include "SDLAux.h"
 #include "Texture.h"
 #include <iostream>
 
@@ -70,14 +70,14 @@ bool loadMedia() {
     TTF_Font* titleFont = TTF_OpenFont("fonts/BRITANIC.ttf", 100);
     TTF_Font* subtitleFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
     TTF_Font* textBigFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
-    TTF_Font* textSmallFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
+    // TTF_Font* textSmallFont = TTF_OpenFont("fonts/BRITANIC.ttf", 50);
 
     titleTexture = new Texture(rend);
-    titleTexture->loadFromFile("img/mainTitle.png");
-    //titleTexture->loadFromText("POOL", titleFont, colorWhite);
+    // titleTexture->loadFromFile("img/mainTitle.png");
+    titleTexture->loadFromText("POOL", titleFont, colorWhite);
     subtitleTexture = new Texture(rend);
-    subtitleTexture->loadFromFile("img/subtitle.png");
-    //->loadFromText("PRESS SPACE TO PLAY", subtitleFont, colorWhite);
+    // subtitleTexture->loadFromFile("img/subtitle.png");
+    subtitleTexture->loadFromText("PRESS SPACE TO PLAY", subtitleFont, colorWhite);
 
     for (int i = 0; i < msgAmount; i++) {
         messageTextures[i] = new Texture(rend);

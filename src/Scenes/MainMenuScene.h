@@ -15,8 +15,8 @@ class MainMenuScene : public Scene {
     Action loop() override;
     bool exit() override;
 
-    StaticObject* title;
-    StaticObject* subtitle;
+    TextBox* title;
+    TextBox* subtitle;
 };
 
 

@@ -7,12 +7,14 @@
 
 bool MainMenuScene::init() {
     std::cout << "Entering main menu" << std::endl;
-    //title = new TextBox(0, screenMiddle, false, true);
-    //subtitle = new TextBox(1, {screenW/2, screenH/2 + 200}, true, true);
-    title = new StaticObject(screenW/2, screenH/2, titleTexture);
-    subtitle = new StaticObject(screenW/2, screenH/2 + 200, subtitleTexture);
+    title = new TextBox(0, screenMiddle, false, true);
+    subtitle = new TextBox(1, {screenW/2, screenH/2 + 200}, true, true);
+    // title = new StaticObject(screenW/2, screenH/2, titleTexture);
+    // subtitle = new StaticObject(screenW/2, screenH/2 + 200, subtitleTexture);
     objects.push_back(title);
     objects.push_back(subtitle);
+
+    return true;
 }
 
 Action MainMenuScene::loop() {
@@ -27,4 +29,6 @@ Action MainMenuScene::loop() {
 
 bool MainMenuScene::exit() {
     std::cout << "Exiting main menu" << std::endl;
+
+    return true;
 }

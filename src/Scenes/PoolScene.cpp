@@ -36,6 +36,7 @@ bool PoolScene::init() {
     poolAction = Aim;
 
     //displayTurnMessages();
+    return true;
 }
 Action PoolScene::loop() {
     switch (poolAction) {
@@ -59,6 +60,7 @@ bool PoolScene::exit() {
     for (int i = 0; i < balls.size(); i++) {
         delete(balls[i]);
     }
+    return true;
 }
 
 void PoolScene::switchPlayer() {

@@ -1,5 +1,5 @@
-SDL2-devel-2.26.2-mingw/*
-SDL2-2.26.2-win32-x64/*
-.vscode/*
-src/Pool.exe
-src/Pool.exe
+build/
+.cache/
+compile_commands.json
+.clangd
+Pool
