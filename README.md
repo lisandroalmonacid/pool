@@ -1,15 +1,20 @@
 ## Pool
 
-Simple 8-ball pool Pool developed in C++, using the SDL2 library for rendering.
+Simple 8-ball Pool game developed in C++, using the SDL2 library for rendering.
 
-## Play
-In a Windows PC, download and open `Pool.exe`.
+## Dependencies
 
-## Compiling source
-Libraries:
+- libsdl2-dev
+- libsdl2-image-dev
+- libsdl2-ttf-dev
 
-SDL2-2.26.2 i686-w64-mingw32
-SDL2_image-2.6.3 i686-w64-mingw32
-SDL2_ttf-2.20.2 i686-w64-mingw32
+These can be installed with your package manager.
 
-The Makefile assumes that they're installed in `C:\SDL\`. This can be easily modified if you have them installed in another directory. Other versions of the library can probably be used.
+## Compiling and running
+
+To compile & run, simply run these commands:
+
+cd build
+cmake ..
+make
+./Pool
